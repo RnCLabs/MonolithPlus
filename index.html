@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Monolith</title>
+    <title>Monolith+</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
       body {
         margin: 0;
         font-family: Consolas, monospace;
-        background-color: #0a0f1e;
+        background-color: #0e1324;
         color: #ffffff;
         overflow: hidden;
       }
@@ -19,7 +19,7 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 70px;
+        height: 60px;
         background-color: #111d3d;
         display: flex;
         align-items: center;
@@ -90,9 +90,151 @@
         background: rgba(255, 255, 255, 0.1);
       }
 
+      .tabs-container {
+        position: relative;
+        top: 60px; /* Abaixo do header */
+        left: 0px;
+        right: 0px;
+        height: 45px; /* Altura da barra de abas */
+        background-color: #10172e; /* Cor de fundo da barra de abas */
+        display: flex;
+        align-items: center;
+        padding: 0px 50px;
+        z-index: 9; /* Abaixo do header, mas acima do editor */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        overflow-x: auto; /* Permite rolar se muitas abas */
+        overflow-y: hidden;
+        white-space: nowrap; /* Impede que as abas quebrem a linha */
+      }
+
+      .tabs-wrapper {
+        display: flex;
+        gap: 10px; /* Espaço entre as abas */
+      }
+
+      .tab-button {
+        top: 0px;
+        background-color: #161c2e; /* Cor de fundo da aba inativa */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 3px 10px 3px 3px; /* Bordas arredondadas no topo */
+        cursor: pointer;
+        font-weight: bold;
+        transition: top 0.5s ease,background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0; /* Impede que as abas encolham */
+      }
+
+      .tab-button:hover {
+        background-color: #3a4560;
+        box-shadow: 0 -2px 10px rgba(100, 0, 255, 0.3); /* Sombra dourada na aba ativa */
+      }
+
+      .tab-button.active {
+        top: 10px;
+        background-color: #0e1324; /* Cor de fundo da aba ativa (igual ao body) */
+        color: gold;
+        box-shadow: 0 -2px 8px rgba(255, 215, 0, 0.6); /* Sombra dourada na aba ativa */
+        position: relative;
+        font-weight: bold;
+        z-index: 1; /* Garante que a aba ativa fique por cima */
+        border-bottom-color: transparent;
+        transition: top 0.5s ease,background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+      }
+
+      .tab-close-button {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+        cursor: pointer;
+        margin-left: 5px;
+        padding: 0 3px;
+        line-height: 1;
+        border-radius: 3px;
+
+        opacity: 0.0;
+        pointer-events: none; /* Impede cliques quando invisível */
+        transition: opacity 0.5s ease, background-color 0.3s ease, color 0.5s ease; /* Adiciona transição para suavizar o aparecimento/desaparecimento */
+      }
+
+      .tab-close-button:hover {
+        color: white;
+        background-color: rgba(255, 0, 0, 0.5);
+      }
+
+      .tab-button.active .tab-close-button {
+        opacity: 1;
+        pointer-events: auto; /* Permite cliques quando visível */
+      }
+
+      .tab-title-input {
+        background-color: #3a4560; /* Fundo do input */
+        border: 1px solid gold; /* Borda dourada */
+        color: white;
+        border-radius: 2px 6px 2px 2px;
+        font-family: inherit; /* Mantém a fonte da aba */
+        font-size: inherit; /* Mantém o tamanho da fonte */
+        outline: none; /* Remove o outline padrão ao focar */
+        width: 100px; /* Largura inicial, ajuste se necessário */
+      }
+
+      .add-tab-button {
+        background-color: #1a1f2e; /* Cor de fundo do botão + */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 5px 9px;
+        border-radius: 50%; /* Bordas arredondadas no topo */
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 12px;
+        transition: background-color 0.2s ease;
+        margin-left: 10px; /* Espaço após as abas */
+        flex-shrink: 0;
+        transition: background-color 0.5s ease, border-color 0.5s ease, color 1s ease, box-shadow 0.5s ease;
+      }
+
+      .add-tab-button:hover {
+        background-color: #0e1324;
+        color: gold;
+        box-shadow: 0 0px 8px rgba(255, 215, 0, 0.5); /* Sombra dourada na aba ativa */
+      }
+
+      .tab-container {
+        display: flex;
+        gap: 5px;
+        background-color: #1a1a1a;
+        padding: 8px;
+      }
+
+      .tab {
+        background-color: #333;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .tab:hover {
+        background-color: #555;
+      }
+
+      .tab.dragging {
+        opacity: 0.5;
+      }
+
+      .tab-button.placeholder {
+        border: 2px dashed gold !important;  /* traço dourado */
+        background-color: rgba(255, 215, 0, 0.1); /* leve fundo para destacar */
+      }
+
       .editor-container {
         position: absolute;
-        top: 60px;
+        top: 110px;
         bottom: 0;
         left: 0;
         right: 0;
@@ -101,37 +243,131 @@
         box-sizing: border-box;
       }
 
+      .editor-container.drag-over {
+        border: 2px dashed #ffaa00; /* Borda tracejada dourada */
+        background-color: rgba(255, 170, 0, 0.1); /* Fundo sutil */
+      }
+
+      .line-content img {
+        max-width: 100%; /* Garante que a imagem não ultrapasse a largura da linha */
+        max-height: 300px;
+        height: auto; /* Mantém a proporção */
+        vertical-align: middle; /* Ajuda a alinhar com o texto */
+        margin: 5px 0; /* Pequena margem para espaçamento visual */
+        border-radius: 8px; /* Opcional: bordas arredondadas para imagens */
+        outline: 2px solid white;
+      }
+
+      .line-content img.resizable-image {
+        outline: 2px dashed #ffaa00; /* Uma borda tracejada para indicar seleção */
+        cursor: pointer; /* Indica que a imagem pode ser interativa */
+      }
+
+      .image-resizer-wrapper {
+        position: relative;
+        display: inline-block; /* Permite que o wrapper se ajuste ao tamanho da imagem */
+        line-height: 0; /* Remove espaço extra abaixo da imagem */
+        user-select: none; /* Impede seleção de texto ao arrastar */
+        box-sizing: content-box; /* Garante que padding/border não afetem o tamanho */
+      }
+
+      /* Estilo para a imagem dentro do wrapper */
+      .image-resizer-wrapper img {
+        display: block; /* Remove espaço extra abaixo da imagem */
+        max-width: none; /* Permite que a imagem seja maior que 100% do pai */
+        max-height: none; /* Permite que a imagem seja maior que a altura máxima definida */
+        height: auto; /* Mantém a proporção ao redimensionar a largura */
+        box-sizing: border-box; /* Inclui padding e border no tamanho total */
+      }
+
+      /* Adiciona o outline SOMENTE quando o wrapper pai está ativo */
+      .image-resizer-wrapper.active img {
+        outline: 2px dashed #ffaa00;
+      }
+
+      .resize-handle {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: gold;
+        border: 1px solid #333;
+        border-radius: 50%; /* Faz as alças serem círculos */
+        z-index: 10; /* Garante que as alças fiquem por cima da imagem */
+      }
+
+      .resize-handle.top-left { top: -5px; left: -5px; cursor: nwse-resize; }
+      .resize-handle.top-right { top: -5px; right: -5px; cursor: nesw-resize; }
+      .resize-handle.bottom-left { bottom: -5px; left: -5px; cursor: nesw-resize; }
+      .resize-handle.bottom-right { bottom: -5px; right: -5px; cursor: nwse-resize; }
+      /* Adicionando alças para os lados se desejar */
+      /* .resize-handle.top { top: -5px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+      .resize-handle.bottom { bottom: -5px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+      .resize-handle.left { left: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+      .resize-handle.right { right: -5px; top: 50%; transform: translateY(-50%); cursor: ew-resize; } */
+
+      /* Para esconder as alças quando a imagem não está selecionada */
+      .image-resizer-wrapper:not(.active) .resize-handle {
+        display: none;
+      }
+
       .line {
         display: flex;
+        line-height: 1.6;
       }
 
       .line-number {
         width: 40px;
         text-align: right;
-        padding-right: 15px;
+        padding-right: 10px;
+        font-weight: bold;
         user-select: none;
-        color: #778da9;
+        color: #446d9e;
+        user-select: none;
+        pointer-events: none;
       }
 
       .line-content {
         flex: 1;
         white-space: pre-wrap;
         word-break: break-word;
-        outline: none;
+        padding-left: 15px;
+        border-radius: 4px;
+        transition: box-shadow 1s ease, color 1s ease, outline 1s ease, filter 0.3s ease;
+      }
 
+      .line-content:focus-within {
+        outline: 1px solid gold; /* Opcional: manter um outline sutil */
+        box-shadow: 0 0 8px 3px rgba(255, 215, 0, 0.5); /* Brilho dourado */
+        /* offset-x | offset-y | blur-radius | spread-radius | color */
+      }
+
+      .inline-graph {
+        width: 80%;
+        height: 100%;    /* ajuste como desejar */
+        max-height: 400px;
+        margin-top: 0px;  /* espaçamento em relação ao texto */
+        padding: 10px;
+      }
+
+      .selected-graph-line {
+        outline: 2px dashed gold;
+        border-radius: 8px
       }
 
       .progress-container {
         position: absolute;
         top: 50%;
-        left: 30px;
+        left: 40px;
         transform: translateY(-50%);
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
       }
 
       .progress-ring {
         transform: rotate(-90deg);
+        position: relative; /* Para permitir posicionamento dentro do container */
+        left: 5px; /* Ajuste para centralizar, baseado no aumento de 10px (5px de cada lado) */
+        top: 5px; /* Ajuste para centralizar */
       }
 
       .progress-ring circle {
@@ -148,7 +384,7 @@
         stroke-linecap: round;
         filter: drop-shadow(0 0 2px gold);
         stroke-width: 3;
-        transition: stroke-dashoffset 0.5s ease;
+        transition: stroke-dashoffset 0.3s ease;
       }
 
       .progress-text {
@@ -158,8 +394,23 @@
         transform: translate(-50%, -50%);
         color: white;
         font-weight: bold;
-        font-size: 16px;
+        font-size: 15px;
         pointer-events: none;
+      }
+
+      mark {
+        opacity: 1;
+        background-color: rgba(255, 215, 0, 0.4); /* Amarelo semi-transparente */
+        color: inherit; /* Mantém a cor do texto original */
+        border-radius: 4px;
+        box-shadow: 0 0 8px 3px rgba(255, 215, 0, 0.4);
+        transition: opacity 2s ease;
+      }
+
+      .hidden-mark {
+        opacity: 0;
+        background-color: transparent;
+        transition: opacity 2s ease, background-color 2s ease;
       }
 
       .modal {
@@ -179,19 +430,35 @@
         background-color: #1c1f2b;
         padding: 20px;
         border-radius: 8px;
-        width: 300px;
+        width: 800px;
         color: white;
         text-align: center;
-        box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        box-shadow: 0 0 5px rgba(255,255,255,0.2);
+        position: relative;
       }
 
       .close {
         position: absolute;
         top: 12px;
-        right: 20px;
-        color: white;
-        font-size: 24px;
+        right: 12px;
+        width: 30px;
+        height: 30px;
+        background-color: #ff4d4d; /* vermelho vivo */
+        color: #1c1f2b;
+        font-size: 20px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        text-align: center;
+        line-height: 30px;
         cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease, color 0.5s ease;
+      }
+
+      .close:hover {
+        background-color: #ff1a1a; /* vermelho mais escuro no hover */
+        color: white;
+        transform: scale(1.05);
       }
 
       .emoji-panel {
@@ -293,6 +560,136 @@
           filter: brightness(1.2); /* Pequeno brilho ao passar o mouse */
       }
 
+      .editor-container table td{
+        border-collapse: collapse;
+        border: 1px solid #888;
+        padding: 15px 12px;
+        margin-bottom: 1em;
+        min-width: 100px;
+        min-height: 80px;
+        vertical-align: top;
+        text-align: center;
+      }
+
+      .editor-container table {
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      .editor-container td {
+        position: relative; /* para posicionar handles dentro */
+      }
+
+      .table-handle {
+        position: absolute;
+        background: gold;
+        color: #111;
+        font-weight: bold;
+        font-size: 12px;
+        width: 16px; height: 16px;
+        line-height: 16px;
+        text-align: center;
+        border-radius: 50%;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s;
+        user-select: none;
+      }
+
+      /* handle pra linha (à direita da célula) */
+      .table-handle.row {
+        top: 50%; right: -10px;
+        transform: translateY(-50%);
+      }
+      /* handle pra coluna (abaixo da célula) */
+      .table-handle.col {
+        left: 50%; bottom: -10px;
+        transform: translateX(-50%);
+      }
+
+      /* mostra handles quando hover na célula */
+      .editor-container td:hover .table-handle {
+        opacity: 1;
+      }
+
+      #graphMapModal {
+        position: fixed;
+        inset: 0;
+        display: none;               /* controlado via JS */
+        align-items: center;
+        justify-content: center;
+        z-index: 20000;              /* alto para ficar sobre tudo */
+        background: rgba(0,0,0,0.55);
+      }
+
+      #graphMapModal.graphmap-visible {
+        display: flex;
+      }
+
+      /* container interno exclusivo */
+      #graphMapModal .graphmap-content {
+        position: relative;
+        width: 91%;
+        height: 81%;
+        background: #0e1324;
+        border-radius: 8px;
+        overflow: hidden;            /* importante para não sobrepor */
+        box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+      }
+
+      /* botão de fechar (dentro do modal) */
+      #closeGraphMapBtn.graphmap-close {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        width: 30px;
+        height: 30px;
+        background-color: #ff4d4d; /* vermelho vivo */
+        color: #1c1f2b;
+        font-size: 20px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        text-align: center;
+        line-height: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease, color 0.5s ease;
+      }
+
+      #closeGraphMapBtn.graphmap-close:hover {
+        background-color: #ff1a1a; /* vermelho mais escuro no hover */
+        color: white;
+        transform: scale(1.05);
+      }
+
+      /* o container Cytoscape exclusivo — ocupa todo o espaço restante */
+      #graphMapCy.graphmap-cy {
+        flex: 1;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 200px;
+        box-sizing: border-box;
+        background: #0b1220;
+      }
+
+      /* destaque ao navegar */
+      .highlight-tag-line {
+        outline: 2px dashed gold;
+        border-radius: 6px;
+      }
+
+      /* esconder botões de zoom (caso ainda existam no DOM) */
+      #zoomInBtn, #zoomOutBtn, #fitBtn { display: none !important; }
+
+      .hashtag-highlight {
+          text-shadow: 0px 0px 8px rgba(255, 255, 0, 0.8);
+          color: #ffeb3b;
+          font-weight: bold;
+      }
+
       .hidden {
         display: none;
       }
@@ -317,52 +714,77 @@
         scrollbar-width: thin;
         scrollbar-color: #ffaa00 #1a1f2e;
       }
-
     </style>
   </head>
   <body>
     <header>
       <div class="progress-container">
         <svg class="progress-ring" width="50" height="50">
-          <circle class="bg" cx="25" cy="25" r="22" />
-          <circle class="progress" cx="25" cy="25" r="22" stroke-dasharray="138" stroke-dashoffset="138" />
+          <circle class="bg" cx="25" cy="25" r="20" />
+          <circle class="progress" cx="25" cy="25" r="20" stroke-dasharray="138" stroke-dashoffset="138" />
         </svg>
         <div class="progress-text">0</div>
       </div>
 
-      <div class="title">Monolith</div>
+      <div class="title">Monolith+</div>
 
       <div class="actions">
         <button onclick="formatText('bold')"><i class="fas fa-bold"></i></button> <!-- <- Aqui altera para o ícone "B" -->
         <button onclick="formatText('italic')"><i class="fas fa-italic"></i></button> <!-- <- Aqui altera para o ícone "I" -->
         <button onclick="formatText('underline')"><u>U</u></button> <!-- <- Aqui altera para o ícone "U" -->
         <button onclick="formatText('strikeThrough')"><i class="fas fa-strikethrough"></i></button>
-        <button onclick="insertCheckbox()">✅</button>
-        <button onclick="toggleEmojiPanel()">🙂</button>
-        <button id="soundToggleBtn" onclick="toggleSound()">🔔</button>
+        <button onclick="toggleMark()"><i class="fas fa-highlighter"></i></button>
+        <button onclick="insertCheckbox()"><i class="fas fa-check-square"></i></button>
+        <button onclick="toggleEmojiPanel()" title="Emojis">🙂</button>
+        <button id="graphMapBtn" title="#Tags">🌐️</button>
+        <button id="soundToggleBtn" onclick="toggleSound()" title="Sound On/Off">🔔</button>
         <div class="dropdown-wrapper">
-          <button class="exportBtn" id="exportBtn" data-dropdown-target="exportOptions">💾</button> <div id="exportOptions" class="dropdown hidden">
+          <button class="exportBtn" id="exportBtn" data-dropdown-target="exportOptions" title="Save Options">💾</button> <div id="exportOptions" class="dropdown hidden">
             <button onclick="exportAs('txt')">.txt</button>
+            <button onclick="exportAs('doc')">.doc</button>
             <button onclick="exportAs('pdf')">.pdf</button>
-            <button onclick="exportAs('docx')">.docx</button>
+            <button onclick="exportAs('html')">.html</button>
           </div>
         </div>
-        <button onclick="toggleInfo()">ℹ️</button>
+        <button onclick="toggleInfo()" title="Informations">ℹ️</button>
       </div>
     </header>
 
-    <div id="counterPopup" class="counter-popup hidden">
-      <span>Contador aumentou para <span id="popupCount">0</span>!</span>
-      <span id="popupEmoji" class="popup-emoji"></span>
+    <div id="tabList" class="tabs-container">
+      <div class="tabs-wrapper" id="tabsWrapper"></div>
+      <button class="add-tab-button" onclick="createTab()" title="New Monolith">+</button>
     </div>
 
     <div class="editor-container" id="editor"></div>
 
+    <div id="graphMapModal" class="graphmap-hidden" aria-hidden="true">
+      <div class="graphmap-content">
+        <button id="closeGraphMapBtn" class="graphmap-close">✕</button>
+        <div class="graphmap-header" style="padding:14px; background:#0f1a33; color:#fff; font-weight:700;">#Tags</div>
+        <div id="graphMapCy" class="graphmap-cy"></div>
+      </div>
+    </div>
+
+    <div id="graph-container" style="padding: 20px; max-height: 200px; overflow: auto;"></div>
+
     <script>
       const editor = document.getElementById("editor");
 
-      editor.addEventListener("click", () => {
-        editor.focus();
+      editor.addEventListener("click", (e) => {
+        if (e.target.classList.contains("line-number")) {
+          const content = e.target.nextElementSibling;
+          const range = document.createRange();
+          range.selectNodeContents(content);
+          range.collapse(true);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+        else if (e.target.classList.contains("line-content")) {
+          // se clicou na área editável, passa o foco para ela
+          e.target.focus();
+        }
+        // editor.focus();
       });
 
       const progressCircle = document.querySelector(".progress-ring .progress");
@@ -391,7 +813,7 @@
 
         osc.type = "sine";
         osc.frequency.setValueAtTime(1550, audioCtx.currentTime);
-        oscGain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        oscGain.gain.setValueAtTime(0.2, audioCtx.currentTime);
         oscGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
 
         osc.connect(oscGain);
@@ -445,6 +867,356 @@
         }
       }
 
+       function toggleMark() {
+          const selection = window.getSelection();
+          if (!selection.rangeCount) return;
+
+          const range = selection.getRangeAt(0);
+          const selectedText = selection.toString();
+
+          let isMarked = false;
+          let commonAncestor = range.commonAncestorContainer;
+
+          if (commonAncestor.nodeType === Node.TEXT_NODE) {
+              commonAncestor = commonAncestor.parentNode;
+          }
+
+          if (commonAncestor && commonAncestor.closest('mark')) {
+              isMarked = true;
+          } else {
+              const fragment = range.cloneContents();
+              if (fragment.querySelector('mark')) {
+                  isMarked = true;
+              }
+          }
+
+          if (isMarked) {
+              const marksToUnmark = [];
+
+              // Coletar todas as tags <mark> que intersectam a seleção
+              let walker = document.createTreeWalker(
+                  editor,
+                  NodeFilter.SHOW_ELEMENT,
+                  { acceptNode: (node) => {
+                      if (node.tagName.toLowerCase() === 'mark' && selection.containsNode(node, true)) {
+                          return NodeFilter.FILTER_ACCEPT;
+                      }
+                      return NodeFilter.FILTER_SKIP;
+                  }}
+              );
+
+              let node;
+              while (node = walker.nextNode()) {
+                  marksToUnmark.push(node);
+              }
+
+              // Aplicar a classe de "esconder" e depois remover o elemento
+              marksToUnmark.forEach(markElement => {
+                  // Se o elemento já está na lista para ser removido (evita processar duplicatas)
+                  if (markElement.classList.contains('hidden-mark')) return;
+
+                  markElement.classList.add('hidden-mark'); // Inicia a transição para sumir
+
+                  // Após a transição, remover o elemento do DOM
+                  setTimeout(() => {
+                      const parent = markElement.parentNode;
+                      if (parent) { // Garante que o pai existe antes de manipular
+                          // Move o conteúdo da <mark> para fora antes de removê-la
+                          while (markElement.firstChild) {
+                              parent.insertBefore(markElement.firstChild, markElement);
+                          }
+                          parent.removeChild(markElement);
+                          updateStorage(); // Atualiza o armazenamento após a remoção final
+                      }
+                  }, 500); // O tempo (500ms) deve ser igual ou ligeiramente maior que a duração da transição CSS
+              });
+
+              // Limpar a seleção atual para evitar problemas visuais após a desmarcação
+              selection.removeAllRanges();
+
+          } else {
+              const fragment = range.cloneContents();
+              const markWrapper = document.createElement('mark');
+              markWrapper.appendChild(fragment);
+
+              range.deleteContents();
+              range.insertNode(markWrapper);
+              updateStorage();
+          }
+      }
+
+      let selectedGraphLine = null;
+      // dessetiva seleção atual
+      function clearGraphSelection() {
+        if (selectedGraphLine) {
+          selectedGraphLine.classList.remove('selected-graph-line');
+          selectedGraphLine = null;
+        }
+      }
+
+      editor.addEventListener('paste', e => {
+          e.preventDefault();
+
+          const clipboard = e.clipboardData || window.clipboardData;
+          const rawHtml  = clipboard.getData('text/html');
+          const rawText  = clipboard.getData('text/plain');
+
+          if (rawHtml) {
+            // 1) Parseia e limpa estilos
+            const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
+            doc.body.querySelectorAll('[style]').forEach(el => el.removeAttribute('style'));
+
+            // 2) Obtém o HTML “limpo” e TRIMA espaços em branco nas extremidades
+            const cleanHtml = doc.body.innerHTML.trim();
+
+            // 3) Insere sem espaços extras
+            document.execCommand('insertHTML', false, cleanHtml);
+          } else {
+            // Apenas texto, também trimado
+            const cleanText = rawText.trim();
+            document.execCommand('insertText', false, cleanText);
+          }
+
+          updateStorage();
+      });
+
+      function insertImageAtCursor(url) {
+        const selection = window.getSelection();
+        let rangeToInsert = null;
+
+        // Lógica para determinar onde inserir (copiada do seu código)
+        if (savedRange && editor.contains(savedRange.startContainer)) {
+            selection.removeAllRanges();
+            selection.addRange(savedRange);
+            rangeToInsert = savedRange;
+        } else if (!selection.rangeCount || !editor.contains(selection.anchorNode)) {
+            const lastLineContent = editor.querySelector('.line:last-child .line-content');
+            if (lastLineContent) {
+                const range = document.createRange();
+                range.selectNodeContents(lastLineContent);
+                range.collapse(false);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                rangeToInsert = range;
+            } else {
+                editor.appendChild(createLine());
+                const createdLineContent = editor.querySelector('.line:last-child .line-content');
+                const range = document.createRange();
+                range.selectNodeContents(createdLineContent);
+                range.collapse(false);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                rangeToInsert = range;
+            }
+        } else {
+            rangeToInsert = selection.getRangeAt(0);
+        }
+
+        // Cria o wrapper e a imagem
+        const wrapper = document.createElement('div');
+        wrapper.className = 'image-resizer-wrapper';
+        wrapper.contentEditable = false; // Impede que o usuário edite o wrapper diretamente
+
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Imagem inserida'; // Sempre bom ter um alt text
+
+        // Define um tamanho inicial para a imagem (opcional, mas bom para começar)
+        img.style.width = '200px';
+        img.style.height = 'auto'; // Mantém a proporção
+
+        wrapper.appendChild(img);
+
+        // Insere o wrapper (com a imagem dentro) no DOM
+        rangeToInsert.deleteContents(); // Remove qualquer conteúdo selecionado
+        rangeToInsert.insertNode(wrapper);
+
+        // Coloca o cursor após a imagem
+        rangeToInsert.setStartAfter(wrapper);
+        rangeToInsert.setEndAfter(wrapper);
+        selection.removeAllRanges();
+        selection.addRange(rangeToInsert);
+
+        updateStorage(); // Atualiza o localStorage
+      }
+
+      let currentResizableImageWrapper = null;
+
+      function deselectAllImages() {
+        if (currentResizableImageWrapper) {
+          currentResizableImageWrapper.classList.remove('active');
+          currentResizableImageWrapper = null;
+        }
+      }
+
+      function createResizeHandles(wrapper) {
+        const handles = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+        // Se você quiser alças laterais: ['top', 'bottom', 'left', 'right']
+
+        handles.forEach(position => {
+          const handle = document.createElement('div');
+          handle.className = `resize-handle ${position}`;
+          handle.dataset.position = position; // Para identificar qual alça está sendo arrastada
+          wrapper.appendChild(handle);
+        });
+      }
+
+      function removeResizeHandles(wrapper) {
+        const handles = wrapper.querySelectorAll('.resize-handle');
+        handles.forEach(handle => handle.remove());
+      }
+
+      editor.addEventListener('click', function(event) {
+        const clickedElement = event.target;
+
+        // Se clicou em uma imagem dentro de um wrapper
+        if (clickedElement.tagName === 'IMG' && clickedElement.closest('.image-resizer-wrapper')) {
+          const wrapper = clickedElement.closest('.image-resizer-wrapper');
+
+          // Se já é a imagem selecionada, não faz nada (ou pode alternar seleção, se quiser)
+          if (wrapper === currentResizableImageWrapper) {
+            return;
+          }
+
+          deselectAllImages(); // Deseleciona a imagem anterior
+
+          wrapper.classList.add('active'); // Ativa o wrapper
+          currentResizableImageWrapper = wrapper;
+
+          // Cria as alças (se ainda não existirem)
+          if (wrapper.querySelectorAll('.resize-handle').length === 0) {
+            createResizeHandles(wrapper);
+          }
+
+        } else if (currentResizableImageWrapper && !clickedElement.closest('.image-resizer-wrapper') && !clickedElement.classList.contains('resize-handle')) {
+          // Se clicou fora da imagem e das alças, deseleciona
+          deselectAllImages();
+        }
+      });
+
+      function resizeImage(imgElement) {
+        const currentWidth = imgElement.width || imgElement.naturalWidth; // Pega a largura atual ou natural
+        const currentHeight = imgElement.height || imgElement.naturalHeight; // Pega a altura atual ou natural
+
+        // Prompt para nova largura
+        let newWidthStr = prompt(`Digite a nova largura da imagem (em pixels). Largura atual: ${currentWidth}px.\nDeixe em branco para cancelar.`);
+
+        if (newWidthStr === null || newWidthStr.trim() === '') {
+          // Usuário cancelou ou digitou vazio
+          return;
+        }
+
+        let newWidth = parseInt(newWidthStr);
+
+        if (isNaN(newWidth) || newWidth <= 0) {
+          alert("Largura inválida. Por favor, digite um número positivo.");
+          return;
+        }
+
+        // Opcional: Manter a proporção
+        const aspectRatio = currentWidth / currentHeight;
+        const newHeight = Math.round(newWidth / aspectRatio);
+
+        imgElement.style.width = `${newWidth}px`;
+        imgElement.style.height = `${newHeight}px`; // Ajusta a altura para manter a proporção
+
+        // Remove os atributos width e height se existirem, para garantir que o CSS 'style' prevaleça
+        imgElement.removeAttribute('width');
+        imgElement.removeAttribute('height');
+
+        updateStorage(); // Salva a alteração no localStorage
+        deselectAllImages(); // Deseleciona a imagem após o redimensionamento
+      }
+
+      let isResizing = false;
+      let startX, startY, startWidth, startHeight, currentHandle;
+      let originalAspectRatio = 1;
+
+      editor.addEventListener('mousedown', function(e) {
+        const handle = e.target.closest('.resize-handle');
+        if (handle && currentResizableImageWrapper) {
+          isResizing = true;
+          e.preventDefault(); // Previne o comportamento padrão do navegador (ex: seleção de texto)
+          e.stopPropagation(); // Impede que o clique se propague para o editor
+
+          currentHandle = handle;
+          const img = currentResizableImageWrapper.querySelector('img');
+          startWidth = img.offsetWidth;
+          startHeight = img.offsetHeight;
+          startX = e.clientX;
+          startY = e.clientY;
+          originalAspectRatio = startWidth / startHeight;
+
+          // Adiciona o listener de mousemove e mouseup ao document para capturar movimentos fora do editor
+          document.addEventListener('mousemove', doResize);
+          document.addEventListener('mouseup', stopResize);
+        }
+      });
+
+      function doResize(e) {
+        if (!isResizing || !currentResizableImageWrapper) return;
+
+        const img = currentResizableImageWrapper.querySelector('img');
+        let newWidth, newHeight;
+
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+
+        // Lógica de redimensionamento baseada na alça arrastada
+        switch (currentHandle.dataset.position) {
+          case 'top-left':
+            newWidth = startWidth - deltaX;
+            newHeight = startHeight - deltaY;
+            break;
+          case 'top-right':
+            newWidth = startWidth + deltaX;
+            newHeight = startHeight - deltaY;
+            break;
+          case 'bottom-left':
+            newWidth = startWidth - deltaX;
+            newHeight = startHeight + deltaY;
+            break;
+          case 'bottom-right':
+            newWidth = startWidth + deltaX;
+            newHeight = startHeight + deltaY;
+            break;
+          // Adicionar casos para alças laterais se você as incluiu
+          /*
+          case 'top':
+            newHeight = startHeight - deltaY;
+            newWidth = newHeight * originalAspectRatio;
+            break;
+          case 'bottom':
+            newHeight = startHeight + deltaY;
+            newWidth = newHeight * originalAspectRatio;
+            break;
+          case 'left':
+            newWidth = startWidth - deltaX;
+            newHeight = newWidth / originalAspectRatio;
+            break;
+          case 'right':
+            newWidth = startWidth + deltaX;
+            newHeight = newWidth / originalAspectRatio;
+            break;
+          */
+        }
+
+        // Garante um tamanho mínimo e mantém a proporção
+        newWidth = Math.max(20, newWidth); // Tamanho mínimo de 20px
+        newHeight = newWidth / originalAspectRatio; // Sempre ajusta a altura pela largura para manter proporção
+
+        img.style.width = `${newWidth}px`;
+        img.style.height = `${newHeight}px`;
+      }
+
+      function stopResize() {
+        isResizing = false;
+        currentHandle = null;
+        document.removeEventListener('mousemove', doResize);
+        document.removeEventListener('mouseup', stopResize);
+        updateStorage(); // Salva o estado final após o redimensionamento
+      }
+
       function createLine(content = "") {
         const line = document.createElement("div");
         line.className = "line";
@@ -463,20 +1235,10 @@
       }
 
       function updateLineNumbers() {
-        const lines = Array.from(editor.children);
-        let realLine = "->";
-        lines.forEach((line, idx) => {
-          const content = line.querySelector(".line-content").innerText.trim();
-          if (content === "" && idx === lines.length - 1) {
-            editor.removeChild(line);
-          } else {
-            line.querySelector(".line-number").textContent = realLine;
-          }
+        const lines = editor.querySelectorAll(".line-number");
+        lines.forEach((line, i) => {
+          line.textContent = i + 1;
         });
-
-        if (editor.children.length === 0) {
-          editor.appendChild(createLine());
-        }
       }
 
       const popup = document.getElementById("counterPopup");
@@ -489,11 +1251,12 @@
       function updateProgress() {
         const content = Array.from(editor.querySelectorAll(".line-content")).map(l => l.innerText).join("\n");
         const charCount = content.length;
-        const percent = (charCount % 100) / 100 * 100;
-        setProgress(percent);
-        const title = document.querySelector(".title");
-
         const score = Math.floor(charCount / 100);
+        const charsInCurrentHundred = charCount % 100;
+
+        const percent = (charsInCurrentHundred % 100) / 100 * 100;
+        setProgress(percent);
+
 
         progressText.textContent = score >= 10000 ? "+" : score;
 
@@ -504,6 +1267,7 @@
           }
         }
 
+        const title = document.querySelector(".title");
         title.style.color = `white`;
 
         if (score > 0) {
@@ -515,19 +1279,63 @@
       }
 
       function updateStorage() {
-        const lines = Array.from(editor.querySelectorAll(".line-content")).map(l => l.innerHTML);
+        const editor = document.getElementById("editor");
+
+        editor.querySelectorAll('.task-checkbox').forEach(cb => {
+            if (cb.checked) cb.setAttribute('checked', 'checked');
+            else            cb.removeAttribute('checked');
+        });
+
+        const currentTab = tabs.find(t => t.id === activeTabId);
+        if (currentTab) {
+          currentTab.content = editor.innerHTML;
+        }
+        localStorage.setItem("monolithTabs", JSON.stringify(tabs));
+        localStorage.setItem("monolithActiveTabId", activeTabId);
+
+        // localStorage.setItem("conteudoEditor", editor.innerHTML);
+
+        const lines = [...editor.children].map(line => {
+          const content = line.querySelector(".line-content");
+          return content.innerHTML;
+        });
         localStorage.setItem("monolith", JSON.stringify(lines));
+
         updateLineNumbers();
         updateProgress();
       }
 
+      window.addEventListener("load", () => {
+        loadFromStorage()
+      });
+
       function loadFromStorage() {
+        const storedTabs = localStorage.getItem("monolithTabs");
+        const storedActiveTabId = localStorage.getItem("monolithActiveTabId");
+
+        if (storedTabs) {
+          tabs = JSON.parse(storedTabs);
+          // Filtra abas vazias ou inválidas se houver
+          tabs = tabs.filter(tab => tab.id && tab.title !== undefined && tab.content !== undefined);
+        }
+
+        // Se não houver abas salvas ou se o array estiver vazio, cria uma aba padrão
+        if (tabs.length === 0) {
+          createTab(); // Isso já vai chamar switchTab e updateStorage
+        } else {
+          // Se houver abas salvas, tenta ativar a última ativa ou a primeira
+          activeTabId = storedActiveTabId && tabs.some(t => t.id === storedActiveTabId) ? storedActiveTabId : tabs[0].id;
+          switchTab(activeTabId); // Carrega o conteúdo da aba ativa
+        }
+
         const saved = JSON.parse(localStorage.getItem("monolith") || "[]");
+        const line = createLine(html);
         if (saved.length > 0) {
           saved.forEach(content => editor.appendChild(createLine(content)));
         } else {
           editor.appendChild(createLine());
         }
+        restoreCheckboxStates()
         updateLineNumbers();
         updateProgress();
       }
@@ -552,6 +1360,15 @@
 
           updateStorage(); // Atualiza o armazenamento após a inserção
       }
+
+      const checkboxes = editor.querySelectorAll(".task-checkbox");
+      checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          checkbox.setAttribute("checked", "checked");
+        } else {
+          checkbox.removeAttribute("checked");
+        }
+      });
 
       let savedRange = null;
       // Salva o range apenas se o foco estiver dentro do editor
@@ -594,6 +1411,12 @@
         }
       });
 
+      document.addEventListener("change", function (e) {
+        if (e.target.classList.contains("task-checkbox")) {
+          updateStorage(); // Salva o HTML atualizado com o estado marcado/desmarcado
+        }
+      });
+
       function exportAs(type) {
         const content = Array.from(document.querySelectorAll(".line-content"))
           .map(line => line.innerText)
@@ -607,18 +1430,133 @@
         }
 
         else if (type === "pdf") {
-          const pdfWindow = window.open("", "", "width=800,height=600");
-          pdfWindow.document.write(`<pre>${content}</pre>`);
+          // Abre uma nova janela/vontainer para o PDF
+          const pdfWindow = window.open("", "_blank", "width=800,height=600");
+
+          // Aqui você pode copiar estilos essenciais ou linkar seu CSS
+          const style = `
+            <style>
+              body {
+                margin: 20px;
+                font-family: Consolas, monospace;
+                background: white;
+                color: black;
+              }
+              .line-content {
+                white-space: pre-wrap;
+                word-break: break-word;
+              }
+              img {
+                max-width: 100%;
+                height: auto;
+              }
+              mark {
+                background-color: rgba(255,215,0,0.4);
+              }
+              .line-number {
+                display: none !important;
+              }
+            </style>
+          `;
+
+          // Insere o HTML completo
+          pdfWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="pt-br">
+              <head>
+                <meta charset="utf-8">
+                <title>Monolith+ Export</title>
+                ${style}
+              </head>
+              <body>
+                ${editor.innerHTML}
+              </body>
+            </html>
+          `);
           pdfWindow.document.close();
-          pdfWindow.print(); // abre o modo de impressão com opção de salvar em PDF
+          // Garante foco antes do print
+          pdfWindow.focus();
+          pdfWindow.print();
         }
 
-        else if (type === "docx") {
-          const html = `<html><head><meta charset="utf-8"></head><body><pre>${content}</pre></body></html>`;
-          const blob = new Blob(['\ufeff', html], {
-            type: "application/msword"
-          });
-          downloadBlob(blob, filename + ".docx");
+        else if (type === "html") {
+          // 1) Seleciona todas as linhas e monta só os conteúdos
+          const bodyLines = Array.from(editor.querySelectorAll('.line')).map(line => {
+            const contentDiv = line.querySelector('.line-content');
+            return `<div class="line">${contentDiv.outerHTML}</div>`;
+          }).join('');
+
+          // 2) Monta o documento completo
+          const fullHtml = `
+            <!DOCTYPE html>
+            <html lang="pt-br">
+              <head>
+                <meta charset="utf-8">
+                <title>Monolith+ Export</title>
+                <style>
+                  body { font-family: Consolas, monospace; padding: 20px; }
+                  .line { margin-bottom: 4px; }
+                  .line-content {
+                    white-space: pre-wrap;
+                    word-break: break-word;
+                    display: block;
+                  }
+                  img { max-width: 100%; height: auto; }
+                  mark { background-color: rgba(255,215,0,0.4); }
+                </style>
+              </head>
+              <body>
+                ${bodyLines}
+              </body>
+            </html>
+          `;
+
+          // 3) Download do .html
+          const blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "monolith-export.html";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // fecha o menu de exportação
+          document.getElementById("exportOptions").classList.add("hidden");
+        }
+
+        else if (type === "doc") {
+          const bodyLines = Array.from(editor.querySelectorAll('.line')).map(line => {
+            const contentDiv = line.querySelector('.line-content');
+            return `<div class="line">${contentDiv.outerHTML}</div>`;
+          }).join('');
+
+          // renomeie o case para 'doc'
+          const html = `
+            <!DOCTYPE html>
+            <html lang="pt-br">
+              <head>
+                <meta charset="utf-8">
+                <title>Monolith+ Export</title>
+                <style>
+                  body { font-family: Consolas, monospace; padding: 20px; }
+                  .line-number { display: none !important; }
+                  .line { margin-bottom: 4px; }
+                  .line-content {
+                    white-space: pre-wrap;
+                    word-break: break-word;
+                    display: block;
+                  }
+                  img { max-width: 100%; height: auto; }
+                  mark { background-color: rgba(255,215,0,0.4); }
+                </style>
+              </head>
+              <body>
+                ${editor.innerHTML}
+              </body>
+            </html>
+          `;
+          const blob = new Blob([html], { type: "application/msword" });
+          downloadBlob(blob, "monolith-export.doc");  // use .doc
         }
 
         document.getElementById("exportOptions").classList.add("hidden");
@@ -706,75 +1644,998 @@
         updateStorage(); // Atualiza o armazenamento após a inserção
       }
 
-      editor.addEventListener("input", updateStorage);
+      editor.addEventListener("input", () => {
+         let content = editor.innerHTML;
+          // Substitui palavras começando com '#' por <span class="hashtag-highlight">
+          content = content.replace(/(^|\s)(#[\wÀ-ÿ]+)/g, (match, space, hashtag) => {
+              return `${space}<span class="hashtag-highlight">${hashtag}</span>`;
+          });
+
+        updateProgress();
+        updateStorage(); // Garante que as mudanças no editor sejam salvas na aba ativa
+      });
+
+      editor.addEventListener('dragover', (e) => {
+          e.preventDefault(); // Necessário para permitir o drop
+          e.stopPropagation(); // Previne que o evento se propague para elementos pais
+          if (e.dataTransfer.types.includes('Files')) { // Verifica se são arquivos sendo arrastados
+              editor.classList.add('drag-over'); // Adiciona a classe de feedback visual
+          }
+      });
+
+      editor.addEventListener('dragleave', (e) => {
+          e.stopPropagation();
+          editor.classList.remove('drag-over'); // Remove a classe de feedback visual
+      });
+
+      editor.addEventListener('drop', (e) => {
+          e.preventDefault(); // Previne o comportamento padrão (abrir arquivo no navegador)
+          e.stopPropagation();
+          editor.classList.remove('drag-over'); // Remove a classe de feedback visual
+
+          const files = e.dataTransfer.files; // Obtém os arquivos arrastados
+
+          if (files.length > 0) {
+              const file = files[0]; // Pega o primeiro arquivo
+
+              if (file.type.startsWith('image/')) {
+                  const reader = new FileReader();
+
+                  // Posição do drop: Tentar obter a posição do cursor onde o drop ocorreu
+                  // Isso é um pouco mais complexo com contenteditable e drag/drop.
+                  // Para simplificar, vamos inseri-lo onde o usuário soltou o arquivo,
+                  // ou no final da linha mais próxima.
+
+                  // Tenta obter o range da seleção antes do drop (se houver)
+                  // ou cria um range no ponto de drop se for possível.
+                  let rangeToInsert = null;
+                  if (document.caretRangeFromPoint) { // Chrome, Edge, Safari
+                      rangeToInsert = document.caretRangeFromPoint(e.clientX, e.clientY);
+                  } else if (e.rangeParent) { // Firefox
+                      rangeToInsert = document.createRange();
+                      rangeToInsert.setStart(e.rangeParent, e.rangeOffset);
+                      rangeToInsert.setEnd(e.rangeParent, e.rangeOffset);
+                  }
+
+                  if (rangeToInsert && editor.contains(rangeToInsert.startContainer)) {
+                      // Se conseguimos uma posição válida dentro do editor
+                      const selection = window.getSelection();
+                      selection.removeAllRanges();
+                      selection.addRange(rangeToInsert);
+                      savedRange = rangeToInsert.cloneRange(); // Atualiza savedRange
+                  } else {
+                      // Se não conseguimos uma posição precisa, insere no final da última linha
+                      const lastLineContent = editor.querySelector('.line:last-child .line-content');
+                      if (lastLineContent) {
+                          const range = document.createRange();
+                          range.selectNodeContents(lastLineContent);
+                          range.collapse(false);
+                          const selection = window.getSelection();
+                          selection.removeAllRanges();
+                          selection.addRange(range);
+                          savedRange = range.cloneRange(); // Atualiza savedRange
+                      }
+                  }
+
+                  reader.onload = function(event) {
+                      const imageUrl = event.target.result;
+                      insertImageAtCursor(imageUrl); // Reutiliza a função de inserção existente
+                  };
+
+                  reader.readAsDataURL(file); // Lê o arquivo como Data URL (Base64)
+              }
+          }
+      });
 
       editor.addEventListener("keydown", e => {
         const selection = window.getSelection();
         if (!selection.rangeCount) return;
-        const range = selection.getRangeAt(0);
-        const currentLine = selection.anchorNode.closest(".line-content");
 
-        if (e.key === "Enter") {
+        const range = selection.getRangeAt(0);
+        let node = selection.anchorNode;
+
+        if (node.nodeType === Node.TEXT_NODE) {
+          node = node.parentNode;
+        }
+
+        const currentLine = node.closest(".line");
+
+        if (currentResizableImageWrapper) {
+          // Verifica se a tecla pressionada é 'Delete' (código 46) ou 'Backspace' (código 8)
+          if (e.key === 'Delete' || e.key === 'Backspace') {
+            e.preventDefault(); // Impede o comportamento padrão do navegador (ex: apagar texto adjacente)
+
+            // Remove o wrapper da imagem do DOM
+            currentResizableImageWrapper.remove();
+
+            // Limpa a referência da imagem selecionada
+            currentResizableImageWrapper = null;
+
+            updateLineNumbers(); // Atualiza os números das linhas se necessário
+            updateStorage();     // Salva o estado atualizado do editor
+          }
+        }
+
+        if (selectedGraphLine && (e.key === 'Delete' || e.key === 'Backspace')) {
           e.preventDefault();
+          // remove a linha inteira que contém só o gráfico
+          editor.removeChild(selectedGraphLine);
+          clearGraphSelection();
+          updateLineNumbers();
+          updateStorage();
+          return;  // não deixa cair nas outras lógicas de Enter, Backspace etc.
+        }
+
+        // ENTER → cria nova linha
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          const content = currentLine.querySelector(".line-content").innerText.trim();
+
+          if (content.startsWith("@")) {
+            const raw = content.slice(1);
+            const expr = raw.replace(/\^/g, "**");
+            // cálculo
+            let output;
+            output = `@${raw}`;
+
+            // atualiza texto
+            const lc = currentLine.querySelector(".line-content");
+            lc.innerText = output;
+
+            // remove gráfico anterior, se existir
+            const next = currentLine.nextSibling;
+            if (next && next.querySelector && next.querySelector('.inline-graph')) {
+              editor.removeChild(next);
+            }
+
+            // atualiza o texto da linha atual
+            currentLine.querySelector('.line-content').innerText = output;
+
+            // cria uma nova linha EM BRANCO logo abaixo
+            const graphLine = createLine('📝 Notes: ');
+            editor.insertBefore(graphLine, currentLine.nextSibling);
+            updateLineNumbers();
+
+            // dentro dessa linha, monta o container para o gráfico
+            const g = document.createElement('div');
+            g.className = 'inline-graph';      // igual ao CSS
+            graphLine.appendChild(g);
+
+            // chama o plot
+            drawGraph(raw, g);
+
+            // não criar outra linha (já inseriu a graphLine), sai aqui
+            return;
+          }
+          else if (content.startsWith("=") && !e.shiftKey) {
+            // = para cálculo simples sem gráfico
+            const expr = content.slice(1).replace(/\^/g, "**");
+            let output;
+            if (/^[\d+\-*/().\s^]+$/.test(expr)) {
+              try {
+                const result = eval(expr);
+                output = `${content} = ${result}`;
+              } catch {
+                output = `${content} = Error ❌`;
+              }
+            } else {
+              output = `${content} = Error ❌`;
+            }
+            currentLine.querySelector(".line-content").innerText = output;
+          }
+
+          // Criar nova linha após a atual
           const newLine = createLine();
-          editor.insertBefore(newLine, currentLine.parentElement.nextSibling);
+          editor.insertBefore(newLine, currentLine.nextSibling);
           updateLineNumbers();
 
+          // Colocar o cursor na nova linha
           const newRange = document.createRange();
-          newRange.selectNodeContents(newLine.querySelector(".line-content"));
+          const newContent = newLine.querySelector(".line-content");
+          newRange.selectNodeContents(newContent);
           newRange.collapse(true);
+
           const sel = window.getSelection();
           sel.removeAllRanges();
           sel.addRange(newRange);
-        } else if (e.key === "Backspace") {
-          const isEmpty = currentLine.innerText.trim() === "";
-          const isFirst = currentLine.parentElement === editor.firstChild;
+
+
+          updateStorage();
+        }
+
+        // BACKSPACE → apaga linha se estiver vazia
+        else if (e.key === "Backspace") {
+          const content = currentLine.querySelector(".line-content");
+          const isEmpty = content.innerText.trim() === "";
+          const isFirst = currentLine === editor.firstChild;
+
           if (isEmpty && !isFirst) {
             e.preventDefault();
-            const prev = currentLine.parentElement.previousSibling;
-            const prevContent = prev.querySelector(".line-content");
-            const content = prevContent.innerHTML + currentLine.innerHTML;
-            prevContent.innerHTML = content;
-            editor.removeChild(currentLine.parentElement);
+            const previous = currentLine.previousSibling;
+            const previousContent = previous.querySelector(".line-content");
+
+            // Mover nós reais (mantendo formatação)
+            while (content.firstChild) {
+              previousContent.appendChild(content.firstChild);
+            }
+
+            editor.removeChild(currentLine);
             updateLineNumbers();
 
+            // Reposicionar cursor ao final da linha anterior
             const newRange = document.createRange();
-            newRange.selectNodeContents(prevContent);
+            newRange.selectNodeContents(previousContent);
             newRange.collapse(false);
             const sel = window.getSelection();
             sel.removeAllRanges();
             sel.addRange(newRange);
+
+            updateStorage();
+          }
+        }
+
+        const lines = editor.querySelectorAll(".line");
+        if (e.key === "Backspace" && lines.length === 1) {
+          const onlyLineContent = lines[0].querySelector(".line-content");
+          if (onlyLineContent.innerText.trim() === "") {
+            e.preventDefault();
           }
         }
       });
 
+      const observer = new MutationObserver(() => {
+        const linhas = editor.querySelectorAll(".line");
+        if (linhas.length === 0) {
+          const nova = createLine();
+          editor.appendChild(nova);
+          updateLineNumbers();
+
+          // Reposiciona o cursor dentro da nova linha
+          const range = document.createRange();
+          const content = nova.querySelector(".line-content");
+          range.selectNodeContents(content);
+          range.collapse(true);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      });
+
+      observer.observe(editor, { childList: true });
+
+      const tabsWrapper = document.getElementById("tabsWrapper");
+      // --- Variáveis para Gerenciamento de Abas ---
+      let tabs = []; // Array de objetos { id: '...', title: '...', content: '...' }
+      let activeTabId = null;
+
+      // --- Funções de Gerenciamento de Abas ---
+
+      function generateUniqueId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+      }
+
+      function renderTabs() {
+        const tabsWrapper = document.getElementById("tabsWrapper");
+        tabsWrapper.innerHTML = '';
+
+        tabs.forEach(tab => {
+          const tabButton = document.createElement('button');
+          tabButton.className = `tab-button ${tab.id === activeTabId ? 'active' : ''}`;
+          tabButton.dataset.tabId = tab.id;
+          // torna arrastável
+          tabButton.setAttribute("draggable", "true");
+
+          // título
+          const titleSpan = document.createElement('span');
+          titleSpan.textContent = tab.title;
+          tabButton.appendChild(titleSpan);
+
+          // fechar
+          const closeButton = document.createElement('span');
+          closeButton.className = 'tab-close-button';
+          closeButton.dataset.tabId = tab.id;
+          closeButton.innerHTML = '&times;';
+          tabButton.appendChild(closeButton);
+
+          // cliques
+          titleSpan.addEventListener('click', () => switchTab(tab.id));
+          tabButton.addEventListener('dblclick', e => {
+            e.stopPropagation();
+            editTabTitle(tab.id, titleSpan);
+          });
+          closeButton.addEventListener('click', e => {
+            e.stopPropagation();
+            closeTab(tab.id);
+          });
+
+          tabsWrapper.appendChild(tabButton);
+        });
+
+        enableTabReordering();
+      }
+
+      function createTab() {
+        const newTabId = generateUniqueId();
+        const newTabTitle = `Monolith ${tabs.length + 1}`;
+        const newTab = {
+          id: newTabId,
+          title: newTabTitle,
+          content: '' // Conteúdo vazio para a nova aba
+        };
+        renderTabs();
+        tabs.push(newTab);
+        switchTab(newTabId); // Ativa a nova aba
+        updateStorage(); // Salva o estado das abas
+      }
+
+      function enableTabReordering() {
+        const tabsWrapper = document.getElementById("tabsWrapper");
+        let draggedId = null;
+
+        tabsWrapper.querySelectorAll(".tab-button").forEach(btn => {
+          // 1) ao começar o drag
+          btn.addEventListener("dragstart", e => {
+            draggedId = btn.dataset.tabId;
+            e.dataTransfer.effectAllowed = "move";
+            btn.classList.add("dragging");
+          });
+
+          // 2) quando soltar fora ou terminar
+          btn.addEventListener("dragend", () => {
+            // limpa qualquer placeholder restante
+            tabsWrapper.querySelectorAll(".tab-button.placeholder")
+                       .forEach(el => el.classList.remove("placeholder"));
+            btn.classList.remove("dragging");
+            draggedId = null;
+          });
+
+          // 3) durante o dragOVER, só mostramos onde vai cair
+          btn.addEventListener("dragover", e => {
+            e.preventDefault(); // precisa para permitir drop
+
+            // limpa os anteriores
+            tabsWrapper.querySelectorAll(".tab-button.placeholder")
+                       .forEach(el => el.classList.remove("placeholder"));
+
+            // marca o alvo
+            const target = e.target.closest(".tab-button");
+            if (target && target.dataset.tabId !== draggedId) {
+              target.classList.add("placeholder");
+            }
+          });
+
+          // 4) aqui sim, ao DROPar, movemos de verdade
+          btn.addEventListener("drop", e => {
+            e.preventDefault();
+
+            const target = e.target.closest(".tab-button");
+            if (!target || target.dataset.tabId === draggedId) return;
+
+            // índices no array
+            const fromIdx = tabs.findIndex(t => t.id === draggedId);
+            const toIdx   = tabs.findIndex(t => t.id === target.dataset.tabId);
+            if (fromIdx < 0 || toIdx < 0 || fromIdx === toIdx) return;
+
+            // move o objeto
+            const [moved] = tabs.splice(fromIdx, 1);
+            tabs.splice(toIdx, 0, moved);
+
+            // limpa placeholder e dragging
+            tabsWrapper.querySelectorAll(".tab-button.placeholder")
+                       .forEach(el => el.classList.remove("placeholder"));
+            const draggingEl = tabsWrapper.querySelector(".tab-button.dragging");
+            if (draggingEl) draggingEl.classList.remove("dragging");
+
+            // rerender, manter ativa e salvar
+            renderTabs();
+            switchTab(draggedId);
+            updateStorage();
+          });
+        });
+      }
+
+      function editTabTitle(tabId, titleSpanElement) {
+        const currentTitle = titleSpanElement.textContent;
+
+        // Cria o campo de entrada (input)
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentTitle;
+        input.className = 'tab-title-input'; // Para estilização no CSS
+
+        // Substitui o SPAN do título pelo INPUT no DOM
+        titleSpanElement.parentNode.replaceChild(input, titleSpanElement);
+
+        input.focus(); // Coloca o foco no input
+        input.select(); // Seleciona todo o texto para facilitar a edição
+
+        const saveTitle = () => {
+          let newTitle = input.value.trim();
+          if (newTitle === "") {
+            newTitle = currentTitle; // Se vazio, mantém o título anterior
+          }
+
+          // Atualiza o título no array 'tabs'
+          const tabToUpdate = tabs.find(t => t.id === tabId);
+          if (tabToUpdate) {
+            tabToUpdate.title = newTitle;
+          }
+
+          // CRÍTICO: Redesenha TODAS as abas.
+          // Isso garante que o elemento `titleSpan` seja recriado com o novo nome
+          // e, mais importante, que todos os event listeners (incluindo o dblclick)
+          // sejam anexados corretamente aos NOVOS elementos no DOM.
+          renderTabs();
+
+          // Opcional: Reativa a aba atual para garantir o foco no editor, embora
+          // `renderTabs` e `switchTab` já deveriam fazer isso na maioria dos casos.
+          // Manter aqui como garantia de consistência.
+          switchTab(activeTabId);
+
+          updateStorage(); // Salva o estado atualizado das abas no localStorage
+        };
+
+        // Salva o título quando o input perde o foco
+        input.addEventListener('blur', saveTitle);
+
+        // Salva o título quando a tecla 'Enter' é pressionada
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            input.blur(); // Tira o foco do input, o que acionará o evento 'blur' e, por sua vez, 'saveTitle'
+            e.preventDefault(); // Previne que o Enter insira uma nova linha, caso o foco caia no editor
+          }
+        });
+      }
+
+      function switchTab(tabId) {
+        // Salva o conteúdo da aba ANTERIOR antes de trocar
+        if (activeTabId && activeTabId !== tabId) {
+          const previousTab = tabs.find(t => t.id === activeTabId);
+          if (previousTab) {
+            previousTab.content = editor.innerHTML;
+          }
+        }
+
+
+        activeTabId = tabId;
+        const selectedTab = tabs.find(t => t.id === tabId);
+
+        if (selectedTab) {
+          editor.innerHTML = selectedTab.content; // Carrega o conteúdo da nova aba
+          if (editor.innerHTML.trim() === "") {
+            editor.appendChild(createLine(""));
+          }
+          editor.focus(); // Coloca o foco no editor
+        } else {
+          editor.innerHTML = ''; // Se a aba não for encontrada (erro), limpa o editor
+        }
+
+        restoreCheckboxStates() // verifica checkbox
+
+        renderTabs(); // Redesenha as abas para atualizar o estado ativo
+        updateLineNumbers(); // Atualiza os números das linhas
+        updateProgress(); // Atualiza o progresso
+
+        const allLines = editor.querySelectorAll('.line-content');
+        if (allLines.length) {
+          const last = allLines[allLines.length - 1];
+          last.focus();
+          const range = document.createRange();
+          range.selectNodeContents(last);
+          range.collapse(false);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+
+        updateStorage(); // Salva o novo estado ativo da aba
+      }
+
+      function closeTab(tabIdToClose) {
+        const tabIndexToClose = tabs.findIndex(t => t.id === tabIdToClose);
+        if (tabIndexToClose === -1) return; // Aba não encontrada
+
+        // Remove a aba do array
+        tabs.splice(tabIndexToClose, 1);
+
+        // NOVO: Se a aba fechada era a única, cria uma nova aba
+        if (tabs.length === 0) {
+          createTab(); // Isso já vai criar uma nova aba e ativá-la
+        } else {
+          // Se a aba fechada era a ativa, selecione outra aba
+          if (tabIdToClose === activeTabId) {
+            // Tenta selecionar a aba anterior, se não houver, seleciona a primeira
+            const newActiveTab = tabs[tabIndexToClose - 1] || tabs[0];
+            if (newActiveTab) {
+              switchTab(newActiveTab.id);
+            } else {
+              // Isso não deve acontecer se tabs.length > 0
+              editor.innerHTML = '';
+              activeTabId = null;
+            }
+          } else {
+            // Se a aba fechada NÃO era a ativa, apenas redesenha as abas para remover o botão
+            renderTabs();
+          }
+        }
+
+        updateStorage(); // Salva o estado atualizado das abas
+      }
+
+      function restoreCheckboxStates() {
+        editor.querySelectorAll('.task-checkbox').forEach(cb => {
+          cb.checked = cb.hasAttribute('checked');
+          cb.addEventListener('change', () => updateStorage());
+        });
+      }
+
+      function attachHandles(td) {
+        // evita duplicatas
+        if (td.querySelector(".table-handle")) return;
+
+        // handle para adicionar linha
+        const hr = document.createElement("div");
+        hr.textContent = "+";
+        hr.className = "table-handle row";
+        hr.addEventListener("click", e => {
+          e.stopPropagation();
+          const tbl = td.closest("table");
+          const idx = td.parentNode.rowIndex;
+          const newTr = tbl.insertRow(idx + 1);
+          const colCount = tbl.rows[0].cells.length;
+          for (let i = 0; i < colCount; i++) {
+            const cell = newTr.insertCell();
+            cell.contentEditable = true;
+            attachHandles(cell);
+          }
+          updateStorage();
+        });
+        td.appendChild(hr);
+
+        // handle para adicionar coluna
+        const hc = document.createElement("div");
+        hc.textContent = "+";
+        hc.className = "table-handle col";
+        hc.addEventListener("click", e => {
+          e.stopPropagation();
+          const tbl = td.closest("table");
+          const colIdx = td.cellIndex;
+          Array.from(tbl.rows).forEach(tr => {
+            const cell = tr.insertCell(colIdx + 1);
+            cell.contentEditable = true;
+            attachHandles(cell);
+          });
+          updateStorage();
+        });
+        td.appendChild(hc);
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        const saved = localStorage.getItem("conteudoEditor");
+        if (saved) {
+          document.getElementById("editor").innerHTML = saved;
+        }
+      });
+
+      function drawGraph(expr, container) {
+        try {
+          const compiled = math.compile(expr);
+          const X = [], Y = [];
+          for (let x = -10; x <= 10; x += 0.2) {
+            X.push(x);
+            Y.push(compiled.evaluate({ x }));
+          }
+          Plotly.newPlot(container, [{ x: X, y: Y, mode: 'lines' }], {
+            margin: { t: 10, b: 30 },
+            paper_bgcolor: '#1a1f2e',
+            plot_bgcolor: '#1a1f2e',
+            font: { color: 'white' },
+          });
+        } catch {
+          return;
+          // container.innerHTML = `<span style="color:red;">Error ${expr}</span>`;
+        }
+      }
+
+      editor.addEventListener('click', e => {
+        const g = e.target.closest('.inline-graph');
+        if (g) {
+          // clica num gráfico
+          clearGraphSelection();
+          const line = g.closest('.line');
+          line.classList.add('selected-graph-line');
+          selectedGraphLine = line;
+        } else {
+          // clicou fora → limpa seleção
+          clearGraphSelection();
+        }
+      });
+
+      /* --------- Índice de tags em memória --------- */
+      let tagIndex = {}; // { tagName: [ { tabId, tabTitle, lineIndex, excerpt } ] }
+
+      /* regex para capturar hashtags no início de palavras (suporta letras acentuadas) */
+      const TAG_REGEX = /#([\p{L}\p{N}_-]+)/gu;
+
+      /* extrai tags de um texto e retorna array de nomes sem # */
+      function extractTagsFromText(text) {
+        const tags = [];
+        let m;
+        while ((m = TAG_REGEX.exec(text)) !== null) {
+          tags.push(m[1]); // m[1] => 'integral' (sem '#')
+        }
+        return tags;
+      }
+
+      /* indexa todas as linhas de uma aba específica */
+      function indexTagsForTab(tabId, tabContentHTML) {
+        // tabContentHTML: HTML salvo da aba (ou podemos ler do editor se for aba ativa)
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(`<div>${tabContentHTML}</div>`, 'text/html');
+        const lines = Array.from(doc.querySelectorAll('.line'));
+        // remove entradas antigas da mesma aba
+        for (const t in tagIndex) {
+          tagIndex[t] = tagIndex[t].filter(e => e.tabId !== tabId);
+          if (tagIndex[t].length === 0) delete tagIndex[t];
+        }
+        // percorre linhas
+        lines.forEach((lineEl, idx) => {
+          const lc = lineEl.querySelector('.line-content');
+          if (!lc) return;
+          const text = lc.innerText || lc.textContent || '';
+          const tags = extractTagsFromText(text);
+          tags.forEach(tag => {
+            if (!tagIndex[tag]) tagIndex[tag] = [];
+            tagIndex[tag].push({
+              tabId,
+              tabTitle: (tabs.find(t => t.id === tabId) || {}).title || tabId,
+              lineIndex: idx,
+              excerpt: text.slice(0, 120)
+            });
+          });
+        });
+      }
+
+      /* reindexa todas as abas (rodar no load e quando atualizar storage) */
+      function indexAllTabs() {
+        tagIndex = {};
+        tabs.forEach(tab => {
+          // se for a aba ativa, indexar diretamente do DOM para pegar mudanças não salvas
+          const content = (activeTabId && tab.id === activeTabId) ? (editor.innerHTML || '') : (tab.content || '');
+          indexTagsForTab(tab.id, content);
+        });
+        // opcional: persistir (mas atualizará sempre ao abrir modal)
+        try { localStorage.setItem('monolithTagIndex', JSON.stringify(tagIndex)); } catch (e) {}
+      }
+
+      /* indexar a aba ativa a partir do DOM (mais preciso enquanto edita) */
+      function indexActiveTabFromDOM() {
+        if (!activeTabId) return;
+        indexTagsForTab(activeTabId, editor.innerHTML);
+        localStorage.setItem('monolithTagIndex', JSON.stringify(tagIndex));
+      }
+
+      /* hook: chame indexActiveTabFromDOM() sempre que updateStorage for chamado
+         (se preferir, adicione dentro de updateStorage() você já tem: call indexActiveTabFromDOM() ) */
+      const _oldUpdateStorage = updateStorage;
+      updateStorage = function(...args) {
+        _oldUpdateStorage(...args);
+        // reindex só a aba ativa para performance
+        indexActiveTabFromDOM();
+      };
+
+
+      /* --------- Funções do grafo (Cytoscape) --------- */
+      let cyMapInstance = null;
+
+      /* função que cria/desenha o grafo no container exclusivo #graphMapCy */
+      function buildGraphMap() {
+        // assegura que o índice esteja atualizado
+        indexAllTabs();
+
+        const elements = [];
+        const seenTabs = new Set();
+
+        for (const tag in tagIndex) {
+          tagIndex[tag].forEach(entry => {
+            const safeTabId = String(entry.tabId);
+            if (!seenTabs.has(safeTabId)) {
+              elements.push({
+                data: { id: `g_tab_${encodeURIComponent(safeTabId)}`, label: entry.tabTitle, type: 'tab', tabId: safeTabId }
+              });
+              seenTabs.add(safeTabId);
+            }
+            const nodeId = `g_tag_${encodeURIComponent(tag)}_${encodeURIComponent(safeTabId)}_${entry.lineIndex}`;
+            elements.push({
+              data: {
+                id: nodeId,
+                label: `#${tag}`,
+                tag,
+                tabId: safeTabId,
+                lineIndex: Number(entry.lineIndex),
+                excerpt: entry.excerpt,
+                type: 'tag-instance'
+              }
+            });
+            elements.push({ data: { source: nodeId, target: `g_tab_${encodeURIComponent(safeTabId)}` } });
+          });
+        }
+
+        const container = document.getElementById('graphMapCy');
+        if (!container) return console.warn('graphMapCy not found');
+
+        container.innerHTML = ''; // limpar
+
+        // destruir instância anterior se existir
+        if (cyMapInstance) {
+          try { cyMapInstance.destroy(); } catch (e) {}
+          cyMapInstance = null;
+        }
+
+        cyMapInstance = cytoscape({
+          container: container,
+          elements,
+          style: [
+            { selector: 'node[type="tab"]', style: { 'font-family': 'Consolas', 'background-color': '#c9a202', 'label': 'data(label)', width: 'label', height: 'label', 'text-valign':'center', 'color':'black', 'font-weight': 'bold', 'text-wrap':'wrap', 'padding':'25px', 'shape':'circle' } },
+            { selector: 'node[type="tag-instance"]', style: { 'font-family': 'Consolas', 'background-color': '#0d2640', 'label': 'data(label)', 'text-valign':'center', 'text-halign': 'center', width: 'label', height: 'label', 'color':'white', 'text-wrap':'wrap', 'padding':'15px', 'shape':'circle' } },
+            { selector: 'edge', style: { 'line-color': '#7f8fa4', 'width': 1 } }
+          ],
+          layout: { name: 'cose', idealEdgeLength: 80, nodeOverlap: 24, refresh: 20 },
+          userZoomingEnabled: true,
+          userPanningEnabled: true,
+          wheelSensitivity: 0.15
+        });
+
+        // garantir que o container já tenha sido pintado — usar rAF/setTimeout e layout.once
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            try {
+              cyMapInstance.resize();
+              const layout = cyMapInstance.layout({ name: 'cose', idealEdgeLength: 80, nodeOverlap: 24, refresh: 20 });
+              layout.run();
+              layout.once('layoutstop', () => {
+                try { cyMapInstance.resize(); cyMapInstance.fit(40); cyMapInstance.center(); }
+                catch (err) { console.warn('cyMap fit error', err); }
+              });
+            } catch (err) {
+              console.warn('cyMap resize/layout error', err);
+            }
+          }, 80);
+        });
+
+        // clique em tag -> navegar (usa a sua função navigateToTagLocation)
+        cyMapInstance.on('tap', 'node[type="tag-instance"]', (evt) => {
+          const d = evt.target.data();
+          if (!d) return;
+          // chamada para a função já existente que troca de aba e rola para a linha
+          navigateToTagLocation(String(d.tabId), d.lineIndex, d.tag);
+        });
+
+        // clique em tab -> abrir aba
+        cyMapInstance.on('tap', 'node[type="tab"]', (evt) => {
+          const d = evt.target.data();
+          if (!d) return;
+          switchTab(String(d.tabId));
+        });
+      }
+
+      function navigateToTagLocation(tabId, lineIndex, tagName) {
+        console.log('navigateToTagLocation called', { tabId, lineIndex, tagName });
+
+        // Fecha o modal do mapa se aberto
+        const modal = document.getElementById('graphMapModal');
+        if (modal) { modal.classList.remove('graphmap-visible'); modal.style.display = 'none'; }
+        if (cyMapInstance) { try { cyMapInstance.destroy(); } catch (e) {} cyMapInstance = null; }
+
+        const tabIdStr = String(tabId);
+        const exists = tabs.some(t => String(t.id) === tabIdStr);
+        if (!exists) {
+          console.warn('navigateToTagLocation: aba não encontrada', tabIdStr);
+          return;
+        }
+
+        // Troca de aba (vai carregar o conteúdo salvo dessa aba)
+        switchTab(tabIdStr);
+
+        // Aguarda o DOM atualizar e tenta localizar a linha — tentativas com timeout
+        let attempts = 0;
+        const maxAttempts = 40; // ~4s
+        const tryScroll = () => {
+          attempts++;
+          const lines = editor.querySelectorAll('.line');
+          if (!lines || lines.length === 0) {
+            if (attempts < maxAttempts) return setTimeout(tryScroll, 100);
+            return;
+          }
+          // duração do destaque (ms) ao navegar a partir do grafo
+          const HIGHLIGHT_DURATION_MS = 800;
+
+          // 1) tenta por índice (se for um número válido)
+          const idx = Number(lineIndex);
+          if (!Number.isNaN(idx) && idx >= 0 && idx < lines.length) {
+            const target = lines[idx];
+            if (target) {
+              target.classList.add('highlight-tag-line');
+              target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              setTimeout(() => target.classList.remove('highlight-tag-line'), HIGHLIGHT_DURATION_MS);
+              const lc = target.querySelector('.line-content');
+              if (lc) {
+                // coloca foco no conteúdo da linha (opcional)
+                lc.focus();
+                // posiciona cursor ao início/fim (escolha a que preferir)
+                const range = document.createRange();
+                range.selectNodeContents(lc);
+                range.collapse(true);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+              }
+              return;
+            }
+          }
+
+          // 2) fallback: busca textual por "#tagName" no conteúdo das linhas
+          if (tagName) {
+            const q = `#${tagName}`;
+            for (let i = 0; i < lines.length; i++) {
+              const lc = lines[i].querySelector('.line-content');
+              if (!lc) continue;
+              if ((lc.innerText || lc.textContent || '').includes(q)) {
+                const target = lines[i];
+                target.classList.add('highlight-tag-line');
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => target.classList.remove('highlight-tag-line'), HIGHLIGHT_DURATION_MS);
+                if (lc) lc.focus();
+                return;
+              }
+            }
+          }
+
+          // 3) se não achou ainda, tenta de novo até maxAttempts
+          if (attempts < maxAttempts) setTimeout(tryScroll, 100);
+        };
+
+        // Delay inicial para garantir que switchTab tenha começado a atualizar o DOM
+        setTimeout(tryScroll, 150);
+      }
+
+      /* ----- Função utilitária: registra listener apenas se o elemento existir ----- */
+      function safeAddListener(id, evt, handler) {
+        const el = document.getElementById(id);
+        if (!el) {
+          console.warn(`safeAddListener: elemento "${id}" não encontrado — listener não registrado`);
+          return null;
+        }
+        el.addEventListener(evt, handler);
+        return el;
+      }
+
+      /* zoom controls (seguros) */
+      safeAddListener('zoomInBtn', 'click', () => { if (cyInstance) cyInstance.zoom(cyInstance.zoom() * 1.2); });
+      safeAddListener('zoomOutBtn', 'click', () => { if (cyInstance) cyInstance.zoom(cyInstance.zoom() / 1.2); });
+      safeAddListener('fitBtn', 'click', () => { if (cyInstance) cyInstance.fit(50); });
+
+      /* open modal genérico (se existir) */
+      const graphBtnEl = document.getElementById('graphBtn');
+      if (graphBtnEl) {
+        graphBtnEl.addEventListener('click', () => {
+          const modal = document.getElementById('graphModal');
+          if (!modal) return console.warn('graphBtn: graphModal não encontrado');
+          modal.classList.remove('hidden');
+          modal.classList.add('modal');
+          modal.style.display = 'flex';
+          indexAllTabs();
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            if (typeof buildGraphAndShow === 'function') {
+              try { buildGraphAndShow(); } catch (err) { console.error('Erro em buildGraphAndShow():', err); }
+            } else console.warn('buildGraphAndShow não definida');
+          }));
+        });
+      } else {
+        console.warn('botão graphBtn não encontrado — não será possível abrir graphModal genérico');
+      }
+
+      /* open modal exclusivo graphMap (novo modal) */
+      const graphMapBtnEl = document.getElementById('graphMapBtn');
+      if (graphMapBtnEl) {
+        graphMapBtnEl.addEventListener('click', () => {
+          const modal = document.getElementById('graphMapModal');
+          if (!modal) return console.warn('graphMapBtn: graphMapModal não encontrado');
+          modal.classList.add('graphmap-visible');
+          modal.style.display = 'flex';
+          indexAllTabs();
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            try { buildGraphMap(); } catch (err) { console.error('Erro em buildGraphMap():', err); }
+          }));
+        });
+      } else {
+        console.warn('botão graphMapBtn não encontrado — não poderá abrir graphMapModal');
+      }
+
+      /* closeGraphMapBtn (seguro) */
+      safeAddListener('closeGraphMapBtn', 'click', () => {
+        const modal = document.getElementById('graphMapModal');
+        if (modal) { modal.classList.remove('graphmap-visible'); modal.style.display = 'none'; }
+        if (cyMapInstance) { try { cyMapInstance.destroy(); } catch (e) { console.warn(e); } cyMapInstance = null; }
+      });
+
+      /* fechar modal ao clicar fora do conteúdo */
+      safeAddListener('graphMapModal', 'click', (e) => {
+        const content = e.target.closest('.graphmap-content');
+        if (!content) {
+          const modal = document.getElementById('graphMapModal');
+          if (modal) { modal.classList.remove('graphmap-visible'); modal.style.display = 'none'; }
+          if (cyMapInstance) { try { cyMapInstance.destroy(); } catch (e) { console.warn(e); } cyMapInstance = null; }
+        }
+      });
+
+      /* permitir ESC para fechar */
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const modal = document.getElementById('graphMapModal');
+          if (modal && modal.classList.contains('graphmap-visible')) {
+            modal.classList.remove('graphmap-visible');
+            modal.style.display = 'none';
+            if (cyMapInstance) { try { cyMapInstance.destroy(); } catch (e) {} cyMapInstance = null; }
+          }
+        }
+      });
+
+      /* indexar ao carregar a app */
+      window.addEventListener('load', () => {
+        // tenta carregar index salvo
+        const saved = localStorage.getItem('monolithTagIndex');
+        if (saved) {
+          try { tagIndex = JSON.parse(saved); } catch {}
+        }
+        // reindex garantido
+        indexAllTabs();
+      });
+
       loadFromStorage();
     </script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.js"></script>
+    <script src="https://unpkg.com/cytoscape@3.23.0/dist/cytoscape.min.js"></script>
 
     <!-- Painel de Informações -->
     <div id="infoPanel" class="modal hidden">
       <div class="modal-content">
-        <span onclick="toggleInfo()" class="close">&times;</span>
-        <h2>Monolith</h2>
-        <p>'The gods spun the ruin of men so that poems might be generated for posterity' - Homero</p>
-        <br><p>The progress counter increments every 100 characters typed.</p>
-        <p><br><i>Developed by Renan Costa<br>@MonolithWords</i><br>
-        </p>
+        <span onclick="toggleInfo()" class="close">x</span>
+        <h1>Monolith+</h1>
+        <p>🌱 The progress counter increments every <b>100 characters</b> typed.</p>
+        <p>🧮 To perform <b>mathematical operations</b>, start the line with <b>'='</b> and then write the algebraic expression. Press <b>'Enter'</b> to see the result.</p>
+        <p>📊 To creat <b>graphic equation</b>, start the line with <b>'@'</b> and then write the algebraic expression with x (e.g. @x^2 + 1). Press <b>'Enter'</b> to see the graph.</p>
+        <p>🏷️ To <b>tag</b> something important and find it easily, start the word with <b>'#'</b> and it will be linked to the monolith it belongs to. To view the <b>tagged words</b>, click the globe 🌐 icon in the menu.</p>
+        <p>🖼️ <b>Drag and drop</b> images to a line to be added to the text.</p>
+        <p>📁 The information is <b>saved locally</b> in the browser and has a <b>5MB limit</b>. When inserting images, make sure they are lightweight or compressed.</p>
+        <p><br><i>Developed by <b>Renan Costa</b><br><a href="https://x.com/MonolithPlus" target="_blank">@MonolithPlus</a></i><br></p>
+        <br><small>📜 All rights reserved.</small>
+        <br><small>⚙️ Version 1.1</small>
       </div>
     </div>
 
     <!-- Painel de Emojis -->
     <div id="emojiPanel" class="emoji-panel hidden">
-      <span onclick="insertEmoji('✅')">✅</span>
-      <span onclick="insertEmoji('❌')">❌</span>
+      <span onclick="insertEmoji('⚠️')">⚠️</span>
       <span onclick="insertEmoji('🔥')">🔥</span>
       <span onclick="insertEmoji('❤️')">❤️</span>
       <span onclick="insertEmoji('⭐')">⭐</span>
       <span onclick="insertEmoji('💡')">💡</span>
+      <span onclick="insertEmoji('➜')">➜</span>
+      <span onclick="insertEmoji('✅')">✅</span>
+      <span onclick="insertEmoji('❌')">❌</span>
+      <span onclick="insertEmoji('📈')">📈</span>
       <span onclick="insertEmoji('🌎')">🌎</span>
       <span onclick="insertEmoji('📍')">📍</span>
-      <span onclick="insertEmoji('⚠️')">⚠️</span>
+      <span onclick="insertEmoji('⚙️')">⚙️</span>
+      <span onclick="insertEmoji('📝')">📝</span>
+      <span onclick="insertEmoji('📜')">📜</span>
+      <span onclick="insertEmoji('🏷️')">🏷️</span>
+      <span onclick="insertEmoji('📁')">📁️</span>
       <span onclick="insertEmoji('🎉')">🎉</span>
+      <span onclick="insertEmoji('🎁')">🎁</span>
+      <span onclick="insertEmoji('🌱')">🌱</span>
       <span onclick="insertEmoji('😀')">😀</span>
       <span onclick="insertEmoji('😎')">😎</span>
       <span onclick="insertEmoji('😂')">😂</span>
