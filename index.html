@@ -673,7 +673,12 @@
         height: 100% !important;
         min-height: 200px;
         box-sizing: border-box;
-        background: #0b1220;
+        background: radial-gradient(
+          circle at center,
+          rgba(14,19,36,1) 0%,
+          rgba(9,13,24,0.8) 90%,
+          rgba(3,5,10,0.8) 100%
+        );
       }
 
       /* destaque ao navegar */
@@ -1342,24 +1347,65 @@
       }
 
       function insertCheckbox() {
-          const selection = window.getSelection();
-          if (!selection.rangeCount) return; // Garante que há uma seleção ativa
+        const sel = window.getSelection();
+        let targetRange;
 
-          const range = selection.getRangeAt(0);
-          const checkboxHtml = '<input type="checkbox" class="task-checkbox" contenteditable="false"> '; // O espaço é importante
+        // Mesma lógica do insertEmoji: usa savedRange ou foca a primeira linha (ou cria uma)
+        if (!sel.rangeCount || !savedRange || !editor.contains(savedRange.startContainer)) {
+          const firstLineContent = editor.querySelector(".line-content");
+          if (firstLineContent) {
+            targetRange = document.createRange();
+            targetRange.selectNodeContents(firstLineContent);
+            targetRange.collapse(false); // colapsa para o fim da linha
+            sel.removeAllRanges();
+            sel.addRange(targetRange);
+            savedRange = targetRange.cloneRange();
+          } else {
+            // Se não existe nenhuma linha, cria uma e usa ela
+            editor.appendChild(createLine());
+            const createdLineContent = editor.querySelector(".line-content");
+            targetRange = document.createRange();
+            targetRange.selectNodeContents(createdLineContent);
+            targetRange.collapse(false);
+            sel.removeAllRanges();
+            sel.addRange(targetRange);
+            savedRange = targetRange.cloneRange();
+          }
+        } else {
+          // usa savedRange existente
+          sel.removeAllRanges();
+          sel.addRange(savedRange);
+          targetRange = savedRange;
+        }
 
-          // Crie um DocumentFragment para inserir o HTML
-          const fragment = range.createContextualFragment(checkboxHtml);
+        // Cria o input checkbox e insere como Node
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.className = "task-checkbox";
+        input.setAttribute("contenteditable", "false"); // mantém mesmo comportamento
 
-          range.deleteContents(); // Remove qualquer conteúdo selecionado
-          range.insertNode(fragment); // Insere o checkbox
+        // Remove seleção (se houver) e insere o checkbox
+        targetRange.deleteContents();
+        targetRange.insertNode(input);
 
-          // Opcional: Mover o cursor para depois do checkbox
-          range.collapse(false); // Colapsa o range para o final da inserção
-          selection.removeAllRanges();
-          selection.addRange(range);
+        // Move o cursor para depois do checkbox
+        targetRange.setStartAfter(input);
+        targetRange.setEndAfter(input);
+        sel.removeAllRanges();
+        sel.addRange(targetRange);
 
-          updateStorage(); // Atualiza o armazenamento após a inserção
+        // Reforça foco na linha (mesma verificação usada no emoji)
+        const focusNode = sel.focusNode;
+        if (focusNode && focusNode.nodeType === Node.TEXT_NODE) {
+          const parent = focusNode.parentElement;
+          if (parent && parent.closest(".line-content")) {
+            parent.focus();
+          }
+        } else if (focusNode && focusNode.closest && focusNode.closest(".line-content")) {
+          focusNode.focus();
+        }
+
+        updateStorage(); // atualiza armazenamento
       }
 
       const checkboxes = editor.querySelectorAll(".task-checkbox");
@@ -2377,8 +2423,8 @@
           container: container,
           elements,
           style: [
-            { selector: 'node[type="tab"]', style: { 'font-family': 'Consolas', 'background-color': '#c9a202', 'label': 'data(label)', width: 'label', height: 'label', 'text-valign':'center', 'color':'black', 'font-weight': 'bold', 'text-wrap':'wrap', 'padding':'25px', 'shape':'circle' } },
-            { selector: 'node[type="tag-instance"]', style: { 'font-family': 'Consolas', 'background-color': '#0d2640', 'label': 'data(label)', 'text-valign':'center', 'text-halign': 'center', width: 'label', height: 'label', 'color':'white', 'text-wrap':'wrap', 'padding':'15px', 'shape':'circle' } },
+            { selector: 'node[type="tab"]', style: { 'font-family': 'Consolas', 'font-size': '22px', 'background-color': '#c9a202', 'label': 'data(label)', width: 'label', height: 'label', 'text-valign':'center', 'color':'black', 'font-weight': 'bold', 'text-wrap':'wrap', 'padding':'28px', 'shape':'circle' } },
+            { selector: 'node[type="tag-instance"]', style: { 'font-family': 'Consolas', 'font-size': '14px', 'background-color': '#0d2640', 'label': 'data(label)', 'text-valign':'center', 'text-halign': 'center', width: 'label', height: 'label', 'color':'white', 'text-wrap':'wrap', 'padding':'15px', 'shape':'circle' } },
             { selector: 'edge', style: { 'line-color': '#7f8fa4', 'width': 1 } }
           ],
           layout: { name: 'cose', idealEdgeLength: 80, nodeOverlap: 24, refresh: 20 },
@@ -2609,10 +2655,10 @@
         <p>📊 To creat <b>graphic equation</b>, start the line with <b>'@'</b> and then write the algebraic expression with x (e.g. @x^2 + 1). Press <b>'Enter'</b> to see the graph.</p>
         <p>🏷️ To <b>tag</b> something important and find it easily, start the word with <b>'#'</b> and it will be linked to the monolith it belongs to. To view the <b>tagged words</b>, click the globe 🌐 icon in the menu.</p>
         <p>🖼️ <b>Drag and drop</b> images to a line to be added to the text.</p>
-        <p>📁 The information is <b>saved locally</b> in the browser and has a <b>5MB limit</b>. When inserting images, make sure they are lightweight or compressed.</p>
+        <p>📁 The text is <b>saved locally</b> in your browser. When inserting images, make sure they are lightweight or compressed.</p>
         <p><br><i>Developed by <b>Renan Costa</b><br><a href="https://x.com/MonolithPlus" target="_blank">@MonolithPlus</a></i><br></p>
-        <br><small>📜 All rights reserved.</small>
-        <br><small>⚙️ Version 1.1</small>
+        <br><small>📜 All rights reserved</small>
+        <br><small>⚙️ Version 1.1b</small>
       </div>
     </div>
 
