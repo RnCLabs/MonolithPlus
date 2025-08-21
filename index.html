@@ -13,6 +13,7 @@
         background-color: #0e1324;
         color: #ffffff;
         overflow: hidden;
+        cursor: url('/cursor_arrow.cur'), auto;
       }
 
       header {
@@ -55,6 +56,7 @@
         cursor: pointer;
         font-weight: bold;
         transition: background-color 0.2s ease;
+        cursor: url('/cursor_arrow.cur'), auto;
       }
 
       .actions button:hover {
@@ -127,6 +129,7 @@
         align-items: center;
         gap: 5px;
         flex-shrink: 0; /* Impede que as abas encolham */
+        cursor: url('/cursor_arrow.cur'), auto;
       }
 
       .tab-button:hover {
@@ -196,6 +199,7 @@
         margin-left: 10px; /* Espaço após as abas */
         flex-shrink: 0;
         transition: background-color 0.5s ease, border-color 0.5s ease, color 1s ease, box-shadow 0.5s ease;
+        cursor: url('/cursor_arrow.cur'), auto;
       }
 
       .add-tab-button:hover {
@@ -242,6 +246,7 @@
         overflow-y: auto;
         padding: 20px;
         box-sizing: border-box;
+
       }
 
       .editor-container.drag-over {
@@ -431,11 +436,12 @@
         background-color: #1c1f2b;
         padding: 20px;
         border-radius: 8px;
-        width: 800px;
+        width: 90%;
         color: white;
         text-align: center;
         box-shadow: 0 0 5px rgba(255,255,255,0.2);
         position: relative;
+        overflow: auto;
       }
 
       .close {
@@ -720,6 +726,201 @@
         scrollbar-width: thin;
         scrollbar-color: #ffaa00 #1a1f2e;
       }
+
+      .task-floating-btn{
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: linear-gradient(180deg,#2b6cff,#1b4ed6);
+        color: #fff;
+        font-size: 20px;
+        box-shadow: 0 0px 20px rgba(27,78,214,0.3);
+        cursor: pointer;
+        z-index: 9999;
+      }
+
+      .task-floating-btn:hover{
+        background: linear-gradient(210deg, #967508, gold);
+        color: #fff;
+        box-shadow: 0 0px 20px rgba(230,190,0,0.4);
+      }
+
+      /* modal */
+      .taskmodal-hidden { display: none; }
+      #taskCardsModal { position: fixed; inset: 0; z-index: 9998; }
+
+      /* backdrop */
+      .taskmodal-backdrop {
+        position: absolute; inset: 0;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(2px);
+      }
+
+      .taskmodal-window{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        width: min(80%, 90%);
+        max-height: 90%;
+        background: #0e1324;
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 18px 50px rgba(0,0,0,0.6);
+      }
+
+      /* header */
+      .taskmodal-header{
+        position: sticky;
+        top: 0;
+        display:flex;
+        z-index: 20;
+        align-items:center;
+        justify-content:space-between;
+        padding: 4px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0));
+      }
+
+      .taskmodal-header h3{ margin:0; font-size:16px; font-weight:700; }
+      .taskmodal-actions { display:flex; gap:8px; align-items:center; }
+      .taskmodal-actions .primary{ padding:8px 12px; border-radius:8px; }
+
+      /* body */
+      .taskmodal-body{
+        position: relative;
+        padding: 16px;
+        overflow: auto;
+        display:flex;
+        gap:16px;
+        flex-direction: column;
+      }
+
+      /* form */
+      .task-form {
+        display:flex;
+        gap:8px;
+        flex-direction: column;
+        margin-bottom: 6px;
+        background: rgba(255,255,255,0.02);
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+        transition: box-shadow 0.3s ease, border-radius 1s ease;
+      }
+
+      .task-form.hidden { display:none; }
+
+      .task-form input[type="text"], .task-form textarea, .task-form input[type="date"]{
+        font-family: Consolas, monospace;
+        padding:8px 10px;
+        border-radius: 6px;
+        border:1px solid rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.02);
+        color: #fff;
+        outline: none;
+      }
+
+      .task-form:hover{
+        box-shadow: 0px 0px 10px rgba(230,190,0,0.45);
+        border-radius:18px;
+      }
+
+      .task-form textarea { min-height:70px; resize:none; }
+      .form-row { display:flex; gap:24px; align-items:center; }
+      .form-actions { display:flex; gap:8px; justify-content:flex-end; }
+
+      .cards-grid {
+        display:grid;
+        grid-template-columns: repeat(auto-fill,minmax(380px,1fr));
+        gap:12px;
+      }
+
+      .card {
+        position: relative;
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+        display:flex;
+        flex-direction:column;
+        gap: 8px;
+        min-height:100px;
+        overflow: hidden;
+        transition: box-shadow 0.3s ease, border-radius 1s ease;
+      }
+
+      .card:hover{
+        box-shadow: 0px 0px 10px rgba(230,190,0,0.45);
+        border-radius:18px;
+        border: 2px white;
+      }
+
+      .closeTaskBtnCSS{
+        background-color: #ff4d4d;
+        color: #1c1f2b;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        padding: 7px 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease, color 0.5s ease;
+      }
+
+      .closeTaskBtnCSS:hover{
+        background-color: #ff1a1a;
+        color: white;
+      }
+
+      .card .card-title { font-weight:700; font-size:14px; display:flex; justify-content:space-between; gap:8px; align-items:center; }
+
+      .card .card-title > span {
+        display: block;
+        max-width: 100%;
+        white-space: nowrap;      /* evita quebra em várias linhas */
+        overflow: hidden;
+        overflow-wrap: anywhere;
+        text-overflow: ellipsis;  /* mostra "..." */
+      }
+      .card .card-desc { font-size:12px; color: #d8dbe6; opacity:0.9; white-space:pre-wrap; }
+      .card .card-desc {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;    /* quantas linhas mostrar antes do "..." */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        overflow-wrap: anywhere;  /* quebra palavras muito longas quando necessário */
+        line-height: 1.4;
+      }
+      .card .meta { font-size:12px; color: #98a0b6; display:flex; gap:28px; align-items:center; }
+      .card .card-actions { display:flex; gap: 4px; justify-content:flex-end; }
+      .icon-btn { border:none; background:transparent; color:inherit; cursor:pointer; padding:4px; border-radius:8px; transition: background 0.3s ease; }
+      .icon-btn:hover{ background: rgba(255,255,255,0.02); }
+
+      /* small modifiers */
+      .primary { background-color: #3b82f6; color: #fcfce8; font-weight: bold; border:none; padding:6px 10px; border-radius:8px; cursor:pointer; transition: background-color 0.4s ease, transform 0.4s ease, color 0.5s ease;}
+      .primary:hover{ background-color: #3b3bf6; color: white;  }
+      .ghost{ background: transparent; color: #cbd5e1; border: none; padding:6px 8px; cursor:pointer;}
+      .danger{ background: #ff4d4d; color: #1c1f2b; font-weight: bold; border:none; padding:6px 8px; border-radius:8px; cursor:pointer; transition: background-color 0.3s ease, transform 0.3s ease, color 0.5s ease;}
+      .danger:hover{ background: #ff1a1a; color: white; font-weight: bold; }
+
+      /* footer */
+      .taskmodal-footer{ padding:10px 14px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.03); }
+      .footer-actions { display:flex; gap:8px; align-items:center; }
+
+      /* responsividade */
+      @media (max-width: 520px) {
+        .card .card-desc {
+          -webkit-line-clamp: 2;
+        }
+      }
+
     </style>
   </head>
   <body>
@@ -742,7 +943,7 @@
         <button onclick="toggleMark()"><i class="fas fa-highlighter"></i></button>
         <button onclick="insertCheckbox()"><i class="fas fa-check-square"></i></button>
         <button onclick="toggleEmojiPanel()" title="Emojis">🙂</button>
-        <button id="graphMapBtn" title="#Tags">🌐️</button>
+        <button id="graphMapBtn" title="#Tags">🏷️</button>
         <button id="soundToggleBtn" onclick="toggleSound()" title="Sound On/Off">🔔</button>
         <div class="dropdown-wrapper">
           <button class="exportBtn" id="exportBtn" data-dropdown-target="exportOptions" title="Save Options">💾</button> <div id="exportOptions" class="dropdown hidden">
@@ -753,6 +954,7 @@
           </div>
         </div>
         <button onclick="toggleInfo()" title="Informations">ℹ️</button>
+        <button id="openTaskCardsBtn" class="task-floating-btn" title="Cards">📝</button>
       </div>
     </header>
 
@@ -761,12 +963,53 @@
       <button class="add-tab-button" onclick="createTab()" title="New Monolith">+</button>
     </div>
 
+    <div id="taskCardsModal" class="taskmodal-hidden" aria-hidden="true">
+      <div class="taskmodal-backdrop" id="taskBackdrop"></div>
+
+      <div class="taskmodal-window" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
+        <header class="taskmodal-header">
+          <h3 id="taskModalTitle">📝 Cards</h3>
+          <div class="taskmodal-actions">
+            <button id="newTaskBtn" class="primary">New</button>
+            <button id="closeTaskModalBtn" class="closeTaskBtnCSS">✕</button>
+          </div>
+        </header>
+
+        <main class="taskmodal-body">
+          <!-- formulário (oculto até novo/editar) -->
+          <form id="taskForm" class="task-form hidden" autocomplete="off">
+            <input type="text" id="taskTitle" placeholder="Title" required />
+            <textarea id="taskDesc" placeholder="Description (optional)"></textarea>
+            <div class="form-row">
+              <input type="date" id="taskDue">
+              <label><input type="checkbox" id="taskCompleted"><b>Finish</b></label>
+              <div class="form-actions">
+                <button type="submit" class="primary">Save Card</button>
+                <button type="button" id="cancelTaskBtn" class="closeTaskBtnCSS">Cancel</button>
+              </div>
+            </div>
+          </form>
+
+          <!-- área onde os cards aparecerão -->
+          <div id="taskCardsContainer" class="cards-grid" aria-live="polite"></div>
+        </main>
+
+        <footer class="taskmodal-footer">
+          <small></small>
+          <div class="footer-actions">
+            <button id="exportTasksBtn" class="ghost">Export (.json)</button>
+            <button id="clearAllTasksBtn" class="danger">Clear All</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+
     <div class="editor-container" id="editor"></div>
 
     <div id="graphMapModal" class="graphmap-hidden" aria-hidden="true">
       <div class="graphmap-content">
         <button id="closeGraphMapBtn" class="graphmap-close">✕</button>
-        <div class="graphmap-header" style="padding:14px; background:#0f1a33; color:#fff; font-weight:700;">#Tags</div>
+        <div class="graphmap-header" style="padding:14px; background:#0f1a33; color:#fff; font-weight:700;">🏷️#Tags</div>
         <div id="graphMapCy" class="graphmap-cy"></div>
       </div>
     </div>
@@ -2639,6 +2882,238 @@
         indexAllTabs();
       });
 
+      (function(){
+        const STORAGE_KEY = 'monolithTaskCards';
+
+        // elements
+        const openBtn = document.getElementById('openTaskCardsBtn');
+        const modal = document.getElementById('taskCardsModal');
+        const backdrop = document.getElementById('taskBackdrop');
+        const closeBtn = document.getElementById('closeTaskModalBtn');
+        const newBtn = document.getElementById('newTaskBtn');
+        const form = document.getElementById('taskForm');
+        const titleInput = document.getElementById('taskTitle');
+        const descInput = document.getElementById('taskDesc');
+        const dueInput = document.getElementById('taskDue');
+        const completedInput = document.getElementById('taskCompleted');
+        const cancelBtn = document.getElementById('cancelTaskBtn');
+        const cardsContainer = document.getElementById('taskCardsContainer');
+        const exportBtn = document.getElementById('exportTasksBtn');
+        const clearAllBtn = document.getElementById('clearAllTasksBtn');
+
+        let cards = []; // array de { id, title, desc, due, completed, createdAt }
+        let editingId = null;
+
+        // ---------- helpers ----------
+        function uid() { return 't_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7); }
+
+        function safeParse(json, fallback) {
+          try { return JSON.parse(json||'null') || fallback; } catch(e){ return fallback; }
+        }
+
+        // ---------- storage ----------
+        function persistCards(){
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+          if (typeof updateStorage === 'function') {
+            try { updateStorage(); } catch(e){ /* ignore */ }
+          }
+        }
+
+        function loadCards(){
+          cards = safeParse(localStorage.getItem(STORAGE_KEY), []);
+          renderCards();
+        }
+
+        // ---------- UI render ----------
+        function renderCards(){
+          cardsContainer.innerHTML = '';
+          if (!cards.length){
+            cardsContainer.innerHTML = '<div style="opacity:0.8;padding:18px;border-radius:8px;background:rgba(255,255,255,0.02)">No cards available.<br> Click "New" to create one.</div>';
+            return;
+          }
+          cards.slice().reverse().forEach(card => { // mostra mais recentes primeiro
+            const el = document.createElement('article');
+            el.className = 'card';
+            el.dataset.id = card.id;
+
+            el.innerHTML = `
+              <div class="card-title">
+                <span>${escapeHtml(card.title || 'Sem título')}</span>
+                <div>
+                  <button class="icon-btn toggle-complete" title="Finish">${card.completed ? '✅️' : '🔳'}</button>
+                  <button class="icon-btn edit-card" title="Edit">✏️</button>
+                  <button class="icon-btn delete-card" title="Delete">🗑️</button>
+                </div>
+              </div>
+              ${card.desc ? `<div class="card-desc">${escapeHtml(card.desc)}</div>` : ''}
+              <div class="meta">
+                <span>Created: ${formatDate(card.createdAt)}</span>
+                ${card.due ? `<span>Deadline: ${formatDate(card.due)}</span>` : ''}
+              </div>
+            `;
+            if (card.completed){
+              el.style.opacity = '0.4';
+              el.style.textDecoration = 'line-through';
+              el.querySelector('.toggle-complete').textContent = '✅️';
+              el.style.border= '2px dashed rgba(255, 255, 255, 0.1)';
+              el.style.background= 'rgb(10, 10, 20)';
+            }
+            cardsContainer.appendChild(el);
+          });
+        }
+
+        // ---------- utility ----------
+        function formatDate(d){
+          if (!d) return '';
+          try {
+            if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
+              const [y,m,day] = d.split('-').map(Number);
+              return new Date(y, m-1, day).toLocaleDateString();
+            }
+            const dt = new Date(d);
+            return isNaN(dt.getTime()) ? String(d) : dt.toLocaleDateString();
+          } catch(e){
+            return String(d);
+          }
+        }
+
+        function escapeHtml(s){
+          if (!s) return '';
+          return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+        }
+
+        // ---------- actions ----------
+        function openModal(){
+          modal.classList.remove('taskmodal-hidden');
+          modal.style.display = 'block';
+          modal.querySelector('.taskmodal-backdrop').style.display = 'block';
+          // foco opcional
+        }
+
+        function closeModal(){
+          modal.classList.add('taskmodal-hidden');
+          modal.style.display = 'none';
+          form.classList.add('hidden');
+          editingId = null;
+          clearForm();
+        }
+
+        function clearForm(){
+          titleInput.value = '';
+          descInput.value = '';
+          dueInput.value = '';
+          completedInput.checked = false;
+        }
+
+        function openFormForNew(){
+          editingId = null;
+          clearForm();
+          form.classList.remove('hidden');
+          titleInput.focus();
+        }
+
+        function openFormForEdit(id){
+          const c = cards.find(x => x.id === id);
+          if (!c) return;
+          editingId = id;
+          titleInput.value = c.title || '';
+          descInput.value = c.desc || '';
+          dueInput.value = c.due || '';
+          completedInput.checked = !!c.completed;
+          form.classList.remove('hidden');
+          titleInput.focus();
+        }
+
+        function saveFromForm(e){
+          if (e) e.preventDefault();
+          const title = titleInput.value.trim() || 'Sem título';
+          const desc = descInput.value.trim();
+          const due = dueInput.value || null;
+          const completed = !!completedInput.checked;
+          if (editingId){
+            const idx = cards.findIndex(c => c.id === editingId);
+            if (idx >= 0){
+              cards[idx] = {...cards[idx], title, desc, due, completed};
+            }
+          } else {
+            const c = { id: uid(), title, desc, due, completed, createdAt: new Date().toISOString() };
+            cards.push(c);
+          }
+          persistCards();
+          renderCards();
+          form.classList.add('hidden');
+          editingId = null;
+        }
+
+        function toggleComplete(id){
+          const idx = cards.findIndex(c => c.id === id);
+          if (idx === -1) return;
+          cards[idx].completed = !cards[idx].completed;
+          persistCards();
+          renderCards();
+        }
+
+        function deleteCard(id){
+          cards = cards.filter(c => c.id !== id);
+          persistCards();
+          renderCards();
+        }
+
+        function exportJson(){
+          const blob = new Blob([JSON.stringify(cards, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'task-cards.json';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        }
+
+        function clearAll(){
+          if (!confirm('Remove all cards?')) return;
+          cards = [];
+          persistCards();
+          renderCards();
+        }
+
+        // ---------- delegated events ----------
+        cardsContainer.addEventListener('click', e => {
+          const cardEl = e.target.closest('.card');
+          if (!cardEl) return;
+          const id = cardEl.dataset.id;
+          if (e.target.closest('.toggle-complete')) {
+            toggleComplete(id);
+          } else if (e.target.closest('.edit-card')) {
+            openFormForEdit(id);
+          } else if (e.target.closest('.delete-card')) {
+            deleteCard(id);
+          }
+        });
+
+        // ---------- listeners ----------
+        openBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', closeModal);
+        newBtn.addEventListener('click', openFormForNew);
+        cancelBtn.addEventListener('click', (ev) => { ev.preventDefault(); form.classList.add('hidden'); editingId=null; clearForm(); });
+        form.addEventListener('submit', saveFromForm);
+        exportBtn.addEventListener('click', exportJson);
+        clearAllBtn.addEventListener('click', clearAll);
+
+        // keyboard: Esc fecha modal
+        document.addEventListener('keydown', e => {
+          if (e.key === 'Escape') {
+            if (!modal.classList.contains('taskmodal-hidden')) closeModal();
+          }
+        });
+
+        // init
+        loadCards();
+
+      })();
+
       loadFromStorage();
     </script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -2652,13 +3127,15 @@
         <h1>Monolith+</h1>
         <p>🌱 The progress counter increments every <b>100 characters</b> typed.</p>
         <p>🧮 To perform <b>mathematical operations</b>, start the line with <b>'='</b> and then write the algebraic expression. Press <b>'Enter'</b> to see the result.</p>
-        <p>📊 To creat <b>graphic equation</b>, start the line with <b>'@'</b> and then write the algebraic expression with x (e.g. @x^2 + 1). Press <b>'Enter'</b> to see the graph.</p>
-        <p>🏷️ To <b>tag</b> something important and find it easily, start the word with <b>'#'</b> and it will be linked to the monolith it belongs to. To view the <b>tagged words</b>, click the globe 🌐 icon in the menu.</p>
+        <p>📊 To create <b>graphic equation</b>, start the line with <b>'@'</b> and then write the algebraic expression with x (e.g. @x^2 + 1). Press <b>'Enter'</b> to see the graph.</p>
+        <p>🏷️ To <b>#tag</b> something important and find it easily, start the word with <b>'#'</b> and it will be linked to the monolith it belongs to. To view the <b>tagged words</b>, click the 🏷️ button.</p>
+        <p>📝 To create <b>cards</b>, click the button in the bottom right corner.</p>
         <p>🖼️ <b>Drag and drop</b> images to a line to be added to the text.</p>
         <p>📁 The text is <b>saved locally</b> in your browser. When inserting images, make sure they are lightweight or compressed.</p>
+
         <p><br><i>Developed by <b>Renan Costa</b><br><a href="https://x.com/MonolithPlus" target="_blank">@MonolithPlus</a></i><br></p>
         <br><small>📜 All rights reserved</small>
-        <br><small>⚙️ Version 1.1b</small>
+        <br><small>⚙️ Version 1.2</small>
       </div>
     </div>
 
@@ -2672,14 +3149,24 @@
       <span onclick="insertEmoji('➜')">➜</span>
       <span onclick="insertEmoji('✅')">✅</span>
       <span onclick="insertEmoji('❌')">❌</span>
+      <span onclick="insertEmoji('⌛')">⌛</span>
+      <span onclick="insertEmoji('📊')">📊</span>
       <span onclick="insertEmoji('📈')">📈</span>
+      <span onclick="insertEmoji('📉')">📉</span>
+      <span onclick="insertEmoji('🧮')">🧮</span>
       <span onclick="insertEmoji('🌎')">🌎</span>
       <span onclick="insertEmoji('📍')">📍</span>
       <span onclick="insertEmoji('⚙️')">⚙️</span>
+      <span onclick="insertEmoji('🛠️')">🛠️</span>
+      <span onclick="insertEmoji('🚧')">🚧</span>
+      <span onclick="insertEmoji('💭')">💭</span>
+      <span onclick="insertEmoji('✍️')">✍️</span>
       <span onclick="insertEmoji('📝')">📝</span>
       <span onclick="insertEmoji('📜')">📜</span>
       <span onclick="insertEmoji('🏷️')">🏷️</span>
+      <span onclick="insertEmoji('🧷')">🧷</span>
       <span onclick="insertEmoji('📁')">📁️</span>
+      <span onclick="insertEmoji('📖')">📖</span>
       <span onclick="insertEmoji('🎉')">🎉</span>
       <span onclick="insertEmoji('🎁')">🎁</span>
       <span onclick="insertEmoji('🌱')">🌱</span>
